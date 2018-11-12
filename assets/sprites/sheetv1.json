@@ -1,0 +1,39 @@
+{"frames": {
+
+"cns glo.png":
+{
+	"frame": {"x":0,"y":0,"w":408,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
+	"sourceSize": {"w":408,"h":256},
+	"anchor": {"x":0,"y":0}
+},
+"mswsn.png":
+{
+	"frame": {"x":0,"y":256,"w":408,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
+	"sourceSize": {"w":408,"h":256},
+	"anchor": {"x":0,"y":0}
+},
+"Tape Deck HQ.png":
+{
+	"frame": {"x":0,"y":512,"w":512,"h":860},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":860},
+	"sourceSize": {"w":512,"h":860},
+	"anchor": {"x":0,"y":0}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "sheetv1.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":1372},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:8b4dba5b7d5be1fa373d1706d871941e:8ee599c3f5937c3fdb735a3cf6e3aadb:e9351694b174a8a6ccf707a990f96bcb$"
+}
+}
