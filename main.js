@@ -1,4 +1,5 @@
 let PIXI = require("pixi.js");
+let audioEngine = require("./audioEngine");
 
 // Aliases
 let Application = PIXI.Application,
@@ -18,7 +19,12 @@ let hand = {
     item: null,
     initPos: []
 };
-let tapes, tapedeck;
+let tapes, tapedeck, player;
+
+// let tapeData = [
+//     {id: "csnglo1", sprite: new Sprite(id["cns glo.png"])},
+//     {id: "mswsn1", sprite: new Sprite(id["mswsn.png"])}
+// ]
 
 // Create a Pixi Application
 let app = new Application({ 
@@ -155,6 +161,9 @@ function launchTape(tape) {
             cur.interactive = true;
         }
     })
+    player = audioEngine(1);
+    player.switchLoop(0);
+    player.play;
     resetHand(hand);
 }
 
