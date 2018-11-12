@@ -14,6 +14,7 @@ let Application = PIXI.Application,
 // Global Vars
 let hand = {
     active: false,
+    tool: false,
     item: null,
     initPos: []
 };
@@ -44,31 +45,48 @@ function setup() {
     tapes = [new Sprite(id["cns glo.png"]), 
             new Sprite(id["mswsn.png"])] ;
     tapedeck = new Sprite(id["Tape Deck HQ.png"]);
+    hammer = new Sprite(id["Hammer.png"]);
 
-   // Initialise tape deck
-    tapedeck.position.set(window.innerWidth / 10, window.innerHeight / 30);
-    //this.stage.addChild(tapedeck);
+    // Initialise tape deck
     tapedeck.scale.set(0.6, 0.6);
-    app.stage.addChild(tapedeck);
+    tapedeck.position.set(window.innerWidth / 10, (window.innerHeight - tapedeck.height) / 2);
     tapedeck.interactive = true;
     tapedeck.mousedown = function(mouseData) {
         if(hand.active) {
-            launchTape(hand);
+            if(hand.tool) {
+                initEffect(hand);
+            } else {
+                launchTape(hand);
+            }
         }
     }
+    app.stage.addChild(tapedeck);
 
-    // initInteractive(tapedeck);
+    // Initialise hammer (toolbox)
+    hammer.position.set(window.innerWidth / 1.8, (window.innerHeight - hammer.height) / 2);
+    hammer.interactive = true;
+    hammer.alpha = 0.6;
+    hammer.mouseover = function(mouseData) {
+        this.alpha = 1;
+    }
+    hammer.mouseout = function(mouseData) {
+        this.alpha = 0.6;
+    }
+    hammer.mousedown = function(mouseData) {
+        hand.active = true;
+        hand.tool = true;
+        hand.item = hammer;
+        hand.initPos = [hammer.position.x, hammer.position.y]
+    }
+    app.stage.addChild(hammer);
+
 
     // Initialise tapes
-
     tapes.forEach((cur, ind) => {
-        cur.position.set(600, (ind + 1) * 175);
+        cur.position.set(500, (ind * 175) + ((window.innerHeight / 2) - 175));
         initInteractive(cur);
         app.stage.addChild(cur);
     })
-
-    // app.stage.addChild(tape);
-    // console.log(app.renderer.plugins.interaction.mouse);
 
     state = play;
  
@@ -126,7 +144,8 @@ function initInteractive(item) {
 function launchTape(tape) {
     tape.item.visible = false;
     tape.item.position.set(...tape.initPos);
-    hand = {active: false, item: null, initPos: []}
+
+    // Side-effects, should maybe avoid (bad form)
 
     // Resets other tapes
     tapes.forEach(cur => {
@@ -136,4 +155,19 @@ function launchTape(tape) {
             cur.interactive = true;
         }
     })
+    resetHand(hand);
+}
+
+function initEffect(handState) {
+    handState.item.position.set(...handState.initPos);
+    handState.item.interactive = true;
+    resetHand(hand);
+
+}
+
+function resetHand(handState) {
+    handState.active = false;
+    handState.tool = false;
+    handState.item = null;
+    handState.initPos = [];
 }
