@@ -4,10 +4,9 @@
 
 ## Tape Loop Demo
 
-A web-based app to do horrible things to tape loops. Currently in its early stages, but progressing every so slightly each day.
+A web-based app/game to do horrible things to tape loops. Currently in its early stages, but progressing every so slightly each day.
 
+###### Frameworks Used
 
-
-#### Ambition
-
-The aim for the project is to create an interactive website that 
+* Pixi.js
+* Tone
