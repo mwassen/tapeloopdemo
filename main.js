@@ -166,7 +166,7 @@ function launchTape(tape) {
         }
     })
     player = audioEngine(tape.item.sounds);
-    player.switchLoop(1);
+    player.switchLoop(0);
     player.play;
     resetHand(hand);
 }
