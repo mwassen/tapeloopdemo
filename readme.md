@@ -1,4 +1,4 @@
-![mswsn1](/Users/Marcus/Code/Loop Destroyer/Visual/Pixel Art/Exports/mswsn1.png)
+![mswsn1](./img/mswsn1.png)
 
 
 
