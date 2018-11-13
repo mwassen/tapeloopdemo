@@ -94,7 +94,7 @@ function setup() {
     // Initialise tapes
     tapes.forEach((cur, ind) => {
         cur.sprite.position.set(500, (ind * 175) + ((window.innerHeight / 2) - 175));
-        initInteractive(cur.sprite);
+        initInteractive(cur);
         app.stage.addChild(cur.sprite);
     })
 
@@ -112,12 +112,12 @@ function play(delta) {
     // app.render(app.stage);
 
     if (hand.active) {
-        hand.item.interactive = false;
+        hand.item.sprite.interactive = false;
         let mPosX = app.renderer.plugins.interaction.mouse.global.x,
             mPosY = app.renderer.plugins.interaction.mouse.global.y;
 
         // Needs to have cursor dissapear
-        hand.item.position.set(mPosX - (hand.item.width / 2), mPosY - ((hand.item.height / 2)));
+        hand.item.sprite.position.set(mPosX - (hand.item.sprite.width / 2), mPosY - ((hand.item.sprite.height / 2)));
 
     }
     
@@ -132,41 +132,41 @@ function play(delta) {
 // Helper Functions, set to other file at some point
 
 function initInteractive(item) {
-    item.interactive = true;
-    item.alpha = 0.6;
+    item.sprite.interactive = true;
+    item.sprite.alpha = 0.6;
 
     // Initialise interactive features
-    item.hitArea = new PIXI.Rectangle(0, 0, item.width, item.height);
-    item.mouseover = function(mouseData) {
+    item.sprite.hitArea = new PIXI.Rectangle(0, 0, item.sprite.width, item.sprite.height);
+    item.sprite.mouseover = function(mouseData) {
         this.alpha = 1;
     }
-    item.mouseout = function(mouseData) {
+    item.sprite.mouseout = function(mouseData) {
         this.alpha = 0.6;
     }
-    item.mousedown = function(mouseData) {
+    item.sprite.mousedown = function(mouseData) {
         hand.active = true;
         hand.item = item;
-        hand.initPos = [item.position.x, item.position.y]
+        hand.initPos = [item.sprite.position.x, item.sprite.position.y]
     }
-    item.scale.set(0.6, 0.6);
+    item.sprite.scale.set(0.6, 0.6);
 }
 
 function launchTape(tape) {
-    tape.item.visible = false;
-    tape.item.position.set(...tape.initPos);
+    tape.item.sprite.visible = false;
+    tape.item.sprite.position.set(...tape.initPos);
 
     // Side-effects, should maybe avoid (bad form)
 
     // Resets other tapes
     tapes.forEach(cur => {
-        if(cur !== tape.item) {
-            cur.alpha = 0.6;
-            cur.visible = true;
-            cur.interactive = true;
+        if(cur.sprite !== tape.item.sprite) {
+            cur.sprite.alpha = 0.6;
+            cur.sprite.visible = true;
+            cur.sprite.interactive = true;
         }
     })
-    player = audioEngine(1);
-    player.switchLoop(0);
+    player = audioEngine(tape.item.sounds);
+    player.switchLoop(1);
     player.play;
     resetHand(hand);
 }

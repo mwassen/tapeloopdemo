@@ -11,11 +11,13 @@ let Tone = require("tone");
 
 
 module.exports = (loop) => {
-    let urls = ["/BassArp.ogg", "/FlutterArp.ogg", "/OrganArp.ogg"],
+    let urls = loop,
         soundEngine = new Tone.Player({
-            url: "assets/sound/loops/mswsn/" + urls[loop],
+            url: urls[0],
             loop: true
         });
+
+    console.log(urls);
 
     let Fx = {
         rack: [],
@@ -44,7 +46,7 @@ module.exports = (loop) => {
             // console.log(loopNr);
             soundEngine.stop();
             soundEngine = new Tone.Player({
-                url: "assets/sound/loops/mswsn/" + urls[loopNr],
+                url: urls[loopNr],
                 loop: true,
                 autostart: true
             });
