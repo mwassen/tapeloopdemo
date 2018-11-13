@@ -33,7 +33,7 @@ let app = new Application({
     height: window.innerHeight,                       
     antialiasing: true, 
     transparent: false, 
-    backgroundColor: 0x966F33,
+    backgroundColor: 0xfafafa,
     resolution: 1
 });
 
@@ -53,7 +53,7 @@ function setup() {
     //         new Sprite(id["mswsn.png"])] ;
 
     tapes = tapeFactory(id);
-    console.log(tapes);
+    // console.log(tapes);
     tapedeck = new Sprite(id["tapedeck.png"]);
     hammer = new Sprite(id["hammer.png"]);
 
