@@ -1,5 +1,6 @@
 let PIXI = require("pixi.js");
 let audioEngine = require("./audioEngine");
+let tapeFactory = require("./tapeFactory");
 
 // Aliases
 let Application = PIXI.Application,
@@ -48,8 +49,10 @@ function setup() {
     let id = PIXI.loader.resources["assets/sprites/sheetv1.json"].textures;
 
     // Maybe tapes should be an object with audio and whatnot attached
-    tapes = [new Sprite(id["cns glo.png"]), 
-            new Sprite(id["mswsn.png"])] ;
+    // tapes = [new Sprite(id["cns glo.png"]), 
+    //         new Sprite(id["mswsn.png"])] ;
+
+    let tapes = tapeFactory(id);
     tapedeck = new Sprite(id["Tape Deck HQ.png"]);
     hammer = new Sprite(id["Hammer.png"]);
 
@@ -180,3 +183,4 @@ function resetHand(handState) {
     handState.item = null;
     handState.initPos = [];
 }
+
