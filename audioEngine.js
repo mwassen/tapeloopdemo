@@ -41,7 +41,7 @@ module.exports = (loop) => {
 
     return {
         switchLoop: (loopNr) => {
-            console.log(loopNr);
+            // console.log(loopNr);
             soundEngine.stop();
             soundEngine = new Tone.Player({
                 url: "assets/sound/loops/mswsn/" + urls[loopNr],
