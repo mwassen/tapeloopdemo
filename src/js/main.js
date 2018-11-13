@@ -3,6 +3,7 @@ const PIXI = require("pixi.js");
 const audioEngine = require("./audioEngine");
 const tapeFactory = require("./tapeFactory");
 
+//sup
 // Aliases
 let Application = PIXI.Application,
 	Container = PIXI.Container,
@@ -40,14 +41,14 @@ let app = new Application({
 
 // Load assets and launch setup
 loader
-	.add("assets/sprites/sheetv1.json")
+	.add("./src/assets/sprites/sheetv1.json")
 	.load(setup);
 
 // Add the canvas
 document.body.appendChild(app.view);
 
 function setup() {
-	let id = PIXI.loader.resources["assets/sprites/sheetv1.json"].textures;
+	let id = PIXI.loader.resources["./src/assets/sprites/sheetv1.json"].textures;
 
 
 	tapes = tapeFactory(id);

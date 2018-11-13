@@ -10,7 +10,7 @@ const tapeDb = [
 function soundArray(name) {
     let sounds = [];
     for(let i = 1; i <= 4; i++) {
-        sounds[i - 1] = "./assets/sound/loops/" + name + "-" + i + ".ogg";
+        sounds[i - 1] = "./src/assets/sound/loops/" + name + "-" + i + ".ogg";
     }
     return sounds;
 }

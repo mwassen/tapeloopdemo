@@ -17,7 +17,7 @@ module.exports = (loop) => {
             loop: true
         });
 
-    console.log(urls);
+    // console.log(urls);
 
     let Fx = {
         rack: [],
