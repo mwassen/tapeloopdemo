@@ -52,9 +52,10 @@ function setup() {
     // tapes = [new Sprite(id["cns glo.png"]), 
     //         new Sprite(id["mswsn.png"])] ;
 
-    let tapes = tapeFactory(id);
-    tapedeck = new Sprite(id["Tape Deck HQ.png"]);
-    hammer = new Sprite(id["Hammer.png"]);
+    tapes = tapeFactory(id);
+    console.log(tapes);
+    tapedeck = new Sprite(id["tapedeck.png"]);
+    hammer = new Sprite(id["hammer.png"]);
 
     // Initialise tape deck
     tapedeck.scale.set(0.6, 0.6);
@@ -92,9 +93,9 @@ function setup() {
 
     // Initialise tapes
     tapes.forEach((cur, ind) => {
-        cur.position.set(500, (ind * 175) + ((window.innerHeight / 2) - 175));
-        initInteractive(cur);
-        app.stage.addChild(cur);
+        cur.sprite.position.set(500, (ind * 175) + ((window.innerHeight / 2) - 175));
+        initInteractive(cur.sprite);
+        app.stage.addChild(cur.sprite);
     })
 
     state = play;

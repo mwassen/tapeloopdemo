@@ -1,6 +1,6 @@
 {"frames": {
 
-"cns glo.png":
+"cnsglo1.png":
 {
 	"frame": {"x":0,"y":0,"w":408,"h":256},
 	"rotated": false,
@@ -8,15 +8,15 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
 	"sourceSize": {"w":408,"h":256}
 },
-"Hammer.png":
+"hammer.png":
 {
-	"frame": {"x":0,"y":256,"w":256,"h":510},
+	"frame": {"x":0,"y":256,"w":256,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":512},
 	"sourceSize": {"w":256,"h":512}
 },
-"mswsn.png":
+"mswsn1.png":
 {
 	"frame": {"x":0,"y":768,"w":408,"h":256},
 	"rotated": false,
@@ -24,7 +24,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
 	"sourceSize": {"w":408,"h":256}
 },
-"Tape Deck HQ.png":
+"tapedeck.png":
 {
 	"frame": {"x":0,"y":1024,"w":512,"h":860},
 	"rotated": false,
@@ -32,6 +32,8 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":860},
 	"sourceSize": {"w":512,"h":860}
 }},
+"animations": {
+},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
@@ -39,6 +41,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":1884},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:f3f9b885c19569c5f8ddda8c23b2c753:d6c25f666bc8b183c89b324d389c781c:e9351694b174a8a6ccf707a990f96bcb$"
+	"smartupdate": "$TexturePacker:SmartUpdate:6f77c5e7814b03162e0bc50b580673b7:bf16243eefc57e83bd47693d16c2c7e2:e9351694b174a8a6ccf707a990f96bcb$"
 }
 }
