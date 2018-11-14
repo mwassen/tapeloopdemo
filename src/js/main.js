@@ -3,7 +3,6 @@ const PIXI = require("pixi.js");
 const audioEngine = require("./audioEngine");
 const tapeFactory = require("./tapeFactory");
 
-//sup
 // Aliases
 let Application = PIXI.Application,
 	Container = PIXI.Container,

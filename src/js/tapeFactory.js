@@ -1,5 +1,3 @@
-// Communicate with loader from here?
-
 const PIXI = require("pixi.js");
 
 const tapeDb = [

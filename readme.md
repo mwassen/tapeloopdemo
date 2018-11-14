@@ -1,10 +1,10 @@
-![mswsn1](./img/mswsn1.png)
+![tape](img/tape.png)
 
 
 
 ## Tape Loop Demo
 
-A web-based app/game to do horrible things to tape loops. Currently in its early stages, but progressing every so slightly each day.
+A web-based app to do horrible things to pixelated cassette tapes. Currently in its early stages, but progressing ever so slightly each day.
 
 ###### Frameworks Used
 

@@ -2,7 +2,7 @@
 
 "cnsglo1.png":
 {
-	"frame": {"x":0,"y":0,"w":408,"h":256},
+	"frame": {"x":0,"y":384,"w":408,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
@@ -10,7 +10,7 @@
 },
 "hammer.png":
 {
-	"frame": {"x":0,"y":256,"w":256,"h":510},
+	"frame": {"x":0,"y":640,"w":256,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":512},
@@ -18,29 +18,54 @@
 },
 "mswsn1.png":
 {
-	"frame": {"x":0,"y":768,"w":408,"h":256},
+	"frame": {"x":408,"y":384,"w":408,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
 	"sourceSize": {"w":408,"h":256}
 },
+"plank1.png":
+{
+	"frame": {"x":0,"y":0,"w":512,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":128},
+	"sourceSize": {"w":512,"h":128}
+},
+"plank2.png":
+{
+	"frame": {"x":0,"y":256,"w":512,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":128},
+	"sourceSize": {"w":512,"h":128}
+},
+"plank3.png":
+{
+	"frame": {"x":0,"y":128,"w":512,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":128},
+	"sourceSize": {"w":512,"h":128}
+},
 "tapedeck.png":
 {
-	"frame": {"x":0,"y":1024,"w":512,"h":860},
+	"frame": {"x":256,"y":640,"w":512,"h":860},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":860},
 	"sourceSize": {"w":512,"h":860}
 }},
 "animations": {
+	"plank": ["plank1.png","plank2.png","plank3.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "sheetv1.png",
 	"format": "RGBA8888",
-	"size": {"w":512,"h":1884},
+	"size": {"w":816,"h":1500},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:6f77c5e7814b03162e0bc50b580673b7:bf16243eefc57e83bd47693d16c2c7e2:e9351694b174a8a6ccf707a990f96bcb$"
+	"smartupdate": "$TexturePacker:SmartUpdate:6988d0709402623549ddd74b5a40d992:fc96acb17cb29a71cfd9de802d96a05a:e9351694b174a8a6ccf707a990f96bcb$"
 }
 }
