@@ -11,6 +11,7 @@ module.exports = (toolId) => {
 
     return {
         init: () => {
+            curSprite.scale.set(0.5, 0.5);
             curSprite.position.set(window.innerWidth / 1.8, (window.innerHeight - curSprite.height) / 2);
             curSprite.interactive = true;
             curSprite.alpha = 0.6;

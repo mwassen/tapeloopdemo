@@ -34,7 +34,7 @@ module.exports = () => {
             mainjs.hand.item = item;
             mainjs.hand.initPos = [item.sprite.position.x, item.sprite.position.y]
         }
-        item.sprite.scale.set(0.6, 0.6);
+        item.sprite.scale.set(0.25, 0.25);
     };
 
     return {

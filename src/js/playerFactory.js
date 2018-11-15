@@ -29,9 +29,10 @@ module.exports = (tapes) => {
     };
 
     return {
+        
         init: () => {
             const curSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
-            curSprite.scale.set(0.6, 0.6);
+            curSprite.scale.set(0.25, 0.25);
             curSprite.position.set(window.innerWidth / 10, (window.innerHeight - curSprite.height) / 2);
             curSprite.interactive = true;
             curSprite.mousedown = function() {
