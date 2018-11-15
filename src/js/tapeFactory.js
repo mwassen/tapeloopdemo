@@ -38,6 +38,7 @@ module.exports = () => {
     };
 
     return {
+        
         init: () => {
             tapeDb.forEach((cur, ind) => {
                 tapes[ind] = {
@@ -52,6 +53,7 @@ module.exports = () => {
                 mainjs.app.stage.addChild(cur.sprite);
             });
         },
+
         tapeReset: (tape) => {
             tapes.forEach((cur) => {
                 if(cur.sprite !== tape.item.sprite) {

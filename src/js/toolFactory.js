@@ -2,17 +2,12 @@ const PIXI = require("pixi.js");
 const mainjs = require("./main.js");
 
 module.exports = (toolId) => {
-    const tools = {
-        hammer: {
-            fx: "break shit"
-        }
-    }
+    // const tools = {
+    //     hammer: {
+    //         fx: "break shit"
+    //     }
+    // }
     const curSprite = new PIXI.Sprite(mainjs.loadFromSheet[toolId + ".png"]);
-    console.log(mainjs.hand);
-    console.log(mainjs.app)
-
-
-
 
     return {
         init: () => {
@@ -30,6 +25,7 @@ module.exports = (toolId) => {
                 mainjs.hand.tool = true;
                 mainjs.hand.item = curSprite;
                 mainjs.hand.initPos = [curSprite.position.x, curSprite.position.y]
+                console.log(mainjs.hand);
             };
             mainjs.app.stage.addChild(curSprite);
         },

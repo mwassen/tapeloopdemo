@@ -9,7 +9,6 @@ const playerFactory = require("./playerFactory");
 let Application = PIXI.Application,
 	Container = PIXI.Container,
 	loader = PIXI.loader,
-	loadFromSheet,
 	resources = PIXI.loader.resources,
 	Graphics = PIXI.Graphics,
 	TextureCache = PIXI.utils.TextureCache,
@@ -18,20 +17,14 @@ let Application = PIXI.Application,
 	TextStyle = PIXI.TextStyle;
 	
 
-// Global Vars
+// Global Variables
 let hand = {
 	active: false,
 	tool: false,
 	item: null,
 	initPos: []
 };
-
-// Items
-let tapes, 
-	tapedeck, 
-	player, 
-	hammer, 
-	state;
+let state;
 
 // Create a Pixi Application
 let app = new Application({
@@ -52,26 +45,24 @@ loader
 document.body.appendChild(app.view);
 
 function setup() {
-	loadFromSheet = loader.resources["./src/assets/sprites/sheetv1.json"].textures;
+	// Define and export reference to sprite sheet
+	const loadFromSheet = loader.resources["./src/assets/sprites/sheetv1.json"].textures;
 	exports.loadFromSheet = loadFromSheet;
 
-	tapes = tapeFactory();
-	tapedeck = playerFactory(tapes);
-	hammer = toolFactory("hammer");
+	// Load elements
+	const tapes = tapeFactory();
+	const tapedeck = playerFactory(tapes);
+	const hammer = toolFactory("hammer");
 
-	// Initialise tapedeck
+	// Initialise elements
 	tapedeck.init();
-
-	// Initialise hammer (toolbox)
 	hammer.init();
-
-	// Initialise tapes
 	tapes.init();
 
 	// Load the play state into gameLoop
 	state = play;
 
-	//Start the game loop
+	// Start the game loop
 	app.ticker.add(delta => gameLoop(delta));
 }
 
@@ -80,13 +71,18 @@ function gameLoop(delta) {
 }
 
 function play(delta) {
+	// ToDo: Needs to have cursor dissapear
+
 	if (hand.active) {
-		hand.item.sprite.interactive = false;
 		let mPosX = app.renderer.plugins.interaction.mouse.global.x,
 			mPosY = app.renderer.plugins.interaction.mouse.global.y;
-
-		// ToDo: Needs to have cursor dissapear
-		hand.item.sprite.position.set(mPosX - (hand.item.sprite.width / 2), mPosY - ((hand.item.sprite.height / 2)));
+		if(hand.tool) {
+			hand.item.interactive = false;
+			hand.item.position.set(mPosX - (hand.item.width / 2), mPosY - ((hand.item.height / 2)));
+		} else {
+			hand.item.sprite.interactive = false;
+			hand.item.sprite.position.set(mPosX - (hand.item.sprite.width / 2), mPosY - ((hand.item.sprite.height / 2)));
+		}
 	}
 }
 
