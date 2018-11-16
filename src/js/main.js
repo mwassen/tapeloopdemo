@@ -5,6 +5,7 @@ const tapeFactory = require("./tapeFactory");
 const toolFactory = require("./toolFactory");
 const playerFactory = require("./playerFactory");
 const table = require("./bg");
+const userI = require("./ui");
 
 // Aliases
 let Application = PIXI.Application,
@@ -31,7 +32,7 @@ let state;
 let app = new Application({
 	width: window.innerWidth,
 	height: window.innerHeight,
-	antialiasing: true,
+	antialiasing: false,
 	transparent: false,
 	backgroundColor: 0x2F4F4F,
 	resolution: 1
@@ -51,18 +52,21 @@ function setup() {
 	exports.loadFromSheet = loadFromSheet;
 
 	// Load elements
+	
 	const tableBg = table();
 	const tapes = tapeFactory();
 	const tapedeck = playerFactory(tapes);
 	const hammer = toolFactory("hammer");
+	const interface = userI();
 
 	// Initialise elements
 	tableBg.init();
 	tapedeck.init();
 	hammer.init();
 	tapes.init();
+	interface.init(tableBg.width(), tableBg.height());
 
-	console.log(tableBg.height());
+	// console.log(tableBg.height());
 
 	// Load the play state into gameLoop
 	state = play;

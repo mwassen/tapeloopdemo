@@ -3,6 +3,23 @@ const mainjs = require("./main.js");
 const audioEngine = require("./audioEngine");
 
 module.exports = (tapes) => {    
+    function setup() {
+        const curSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
+        curSprite.scale.set(0.25, 0.25);
+        curSprite.position.set(window.innerWidth / 10, (window.innerHeight - curSprite.height) / 2);
+        curSprite.interactive = true;
+        curSprite.mousedown = function() {
+            if(mainjs.hand.active) {
+                if(mainjs.hand.tool) {
+                    initEffect(mainjs.hand);
+                } else {
+                    launchTape(mainjs.hand);
+                }
+            }
+        };
+        mainjs.app.stage.addChild(curSprite);
+    };
+
     function launchTape(tape) {
         tape.item.sprite.visible = false;
         tape.item.sprite.position.set(...tape.initPos);
@@ -29,23 +46,8 @@ module.exports = (tapes) => {
     };
 
     return {
-        
         init: () => {
-            const curSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
-            curSprite.scale.set(0.25, 0.25);
-            curSprite.position.set(window.innerWidth / 10, (window.innerHeight - curSprite.height) / 2);
-            curSprite.interactive = true;
-            curSprite.mousedown = function() {
-                if(mainjs.hand.active) {
-                    if(mainjs.hand.tool) {
-                        initEffect(mainjs.hand);
-                    } else {
-                        launchTape(mainjs.hand);
-                    }
-                }
-            };
-            mainjs.app.stage.addChild(curSprite);
+            setup();
         },
-
     }
 }

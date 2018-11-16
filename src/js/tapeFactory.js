@@ -9,6 +9,31 @@ module.exports = () => {
 
     let tapes = [];
 
+    function setup() {
+        tapeDb.forEach((cur, ind) => {
+            tapes[ind] = {
+                sprite: new PIXI.Sprite(mainjs.loadFromSheet[cur + ".png"]),
+                sounds: soundArray(cur)
+            }
+        });
+
+        tapes.forEach((cur, ind) => {
+            cur.sprite.position.set(500, (ind * 175) + ((window.innerHeight / 2) - 175));
+            initInteractive(cur);
+            mainjs.app.stage.addChild(cur.sprite);
+        });
+    };
+
+    function restore(tape) {
+        tapes.forEach((cur) => {
+            if(cur.sprite !== tape.item.sprite) {
+                cur.sprite.alpha = 0.6;
+                cur.sprite.visible = true;
+                cur.sprite.interactive = true;
+            }
+        });
+    }
+
     function soundArray(name) {
         let sounds = [];
         for(let i = 1; i <= 4; i++) {
@@ -19,6 +44,7 @@ module.exports = () => {
 
     function initInteractive(item) {
         item.sprite.interactive = true;
+        item.sprite.buttonMode = true;
         item.sprite.alpha = 0.6;
     
         // Initialise interactive features
@@ -38,30 +64,11 @@ module.exports = () => {
     };
 
     return {
-        
         init: () => {
-            tapeDb.forEach((cur, ind) => {
-                tapes[ind] = {
-                    sprite: new PIXI.Sprite(mainjs.loadFromSheet[cur + ".png"]),
-                    sounds: soundArray(cur)
-                }
-            });
-
-            tapes.forEach((cur, ind) => {
-                cur.sprite.position.set(500, (ind * 175) + ((window.innerHeight / 2) - 175));
-                initInteractive(cur);
-                mainjs.app.stage.addChild(cur.sprite);
-            });
+            setup();
         },
-
         tapeReset: (tape) => {
-            tapes.forEach((cur) => {
-                if(cur.sprite !== tape.item.sprite) {
-                    cur.sprite.alpha = 0.6;
-                    cur.sprite.visible = true;
-                    cur.sprite.interactive = true;
-                }
-            });
+            restore(tape);
         }
     };
 }

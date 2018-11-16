@@ -19,7 +19,13 @@ module.exports = () => {
             } 
         }
 
-        console.log(table.width, table.height);
+        // const stroke = new PIXI.Graphics()
+        //     .beginFill(0xC19A6B)
+        //     .drawRect(-15, -15, table.width + 30, table.height + 30);
+
+        // table.children.unshift("hellooo");
+
+        // console.log(table.children);
         table.position.set((window.innerWidth - table.width) / 2,(window.innerHeight - table.height) / 2);
 
         mainjs.app.stage.addChild(table);
