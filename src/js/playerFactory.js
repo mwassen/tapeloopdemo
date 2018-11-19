@@ -25,7 +25,6 @@ function setupPositions(size) {
 
     for (let y = 0; y < yAmount; y++) {
         for (let x = 0; x < xAmount; x++) {
-            
             let xPos = (x * boxX) + (boxX / 2) + tableDiffx;
             let yPos = (y * boxY) + (boxY / 2) + tableDiffy;
             output.push([xPos, yPos]);
@@ -49,6 +48,7 @@ module.exports = () => {
         const curSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
         curSprite.anchor.set(0.5);
         curSprite.scale.set(0.3, 0.3);
+        curSprite.rotation = (Math.random() - 0.5) * 0.2;
         let deckPos = positions.splice(0, 1);
         if (deckPos[0] == undefined) {
             console.log("no space on table");
@@ -90,7 +90,7 @@ module.exports = () => {
         tape.item.sprite.visible = false;
         tape.item.sprite.position.set(...tape.initPos);
         
-        mainjs.tState.tapes.tapeReset(tape);
+        // mainjs.tState.tapes.tapeReset(tape);
         let player = audioEngine(tape.item.sounds);
         player.switchLoop(0);
     

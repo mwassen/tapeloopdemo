@@ -1,6 +1,7 @@
 const PIXI = require("pixi.js");
 const mainjs = require("./main");
 const playerFactory = require("./playerFactory");
+const tapeFactory = require("./tapeFactory");
 const FontFaceObserver = require("fontfaceobserver");
 
 
@@ -31,18 +32,18 @@ module.exports = () => {
                     btn.buttonMode = true;
                     btn.hitArea = new PIXI.Rectangle(0, -10, btn.width, btn.height + 20);
                     btn.mouseover = () => {
-                        btn.style.fill = "blue";
+                        btn.style.fill = 0xe25822;
                     };
                     btn.mouseout = () => {
                         btn.style.fill = "white";
                     };
                     btn.mouseup = () => {
-                        btn.style.fill = "blue";
+                        btn.style.fill = 0xe25822;
                     };
                 })
 
                 addDeck.mousedown = () => {
-                    addDeck.style.fill = "red";
+                    addDeck.style.fill = "blue";
                     // TODO add container that stores tapes behind the UI
                     let newDeck = playerFactory();
                     newDeck.newPlayer();
@@ -52,11 +53,11 @@ module.exports = () => {
                 removeDeck.mousedown = () => {
                     let deckObj = playerFactory();
                     deckObj.delPlayer();
-                    removeDeck.style.fill = "red";
+                    removeDeck.style.fill = "blue";
                 };
 
                 resetTable.mousedown = () => {
-                    resetTable.style.fill = "red";
+                    resetTable.style.fill = "blue";
                 };
 
                 return btnArr;
@@ -71,7 +72,59 @@ module.exports = () => {
             sprite: null,
             // Select from tape catalogue
             populate: () => {
-                return [];
+                let tapeFact = tapeFactory();
+                let tapeArray = tapeFact.menuInit();
+                let fullContainer = new PIXI.Container();
+
+                // console.log(tapeArray);
+
+                tapeArray.forEach((cur, ind) => {
+                    let tapeBtn = new PIXI.Container();
+                    let sprite = cur.sprite;
+                    let name = new PIXI.Text(cur.name, {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"});
+                    let tapeBg = new PIXI.Graphics();
+
+
+                    // sprite.anchor.set(0.5);
+                    // name.anchor.set(0, 0.5);
+                    sprite.scale.set(0.2);
+
+                    tapeBg.beginFill(0xe25822);
+                    tapeBg.drawRect(-2, -2, sprite.width + 4, sprite.height + 4);
+                    tapeBg.visible = false;
+                    
+
+                    sprite.position.set(0, 0);
+
+                    name.position.set(95, 24);
+                    tapeBtn.addChild(tapeBg);
+                    tapeBtn.addChild(sprite);
+                    tapeBtn.addChild(name);
+                    tapeBtn.interactive = true;
+                    tapeBtn.buttonMode = true;
+                    tapeBtn.hitArea = new PIXI.Rectangle(0, 0, tapeBtn.width, tapeBtn.height);
+                    tapeBtn.position.set(15, ind * 65);
+
+                    tapeBtn.mouseover = () => {
+                        tapeBg.visible = true;
+                        name.style.fill = 0xe25822;
+                    };
+
+                    tapeBtn.mouseout = () => {
+                        tapeBg.visible = false;
+                        name.style.fill = "white";
+                    };
+
+                    tapeBtn.mousedown = () => {
+                        tapeFact.addToHand(cur);
+                    };
+
+                    fullContainer.addChild(tapeBtn);
+                });
+
+                fullContainer.position.set(0, 15);
+                
+                return [fullContainer];
             }
         },
         {   
@@ -98,11 +151,11 @@ module.exports = () => {
 
         // cursor events
         textSprite.mouseup = () => {
-            textSprite.style.fill = "blue";
+            textSprite.style.fill = 0xe25822;
         }
         textSprite.mouseover = () => {
             btn.menu.visible = true;
-            textSprite.style.fill = "blue";
+            textSprite.style.fill = 0xe25822;
         }
         textSprite.mouseout = () => {
             // hover state changes when cursor moves down to menu

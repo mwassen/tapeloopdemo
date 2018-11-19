@@ -63,12 +63,42 @@ module.exports = () => {
         item.sprite.scale.set(0.25, 0.25);
     };
 
+    function createMenu() {
+        tapeDb.forEach((cur, ind) => {
+            tapes[ind] = {
+                name: cur,
+                sprite: new PIXI.Sprite(mainjs.loadFromSheet[cur + ".png"]),
+                sounds: soundArray(cur)
+            }
+        });
+        return tapes;
+    };
+
+    function activeTape(tape) {
+        let clickedTape = {
+            sprite: new PIXI.Sprite(mainjs.loadFromSheet[tape.name + ".png"]),
+            sounds: soundArray(tape.name)
+        }
+        clickedTape.sprite.scale.set(0.25, 0.25);
+
+        mainjs.app.stage.addChild(clickedTape.sprite);
+
+        mainjs.hand.active = true;
+        mainjs.hand.item = clickedTape;
+    };
+
     return {
         init: () => {
             setup();
         },
+        menuInit: () => {
+            return createMenu();
+        },
         tapeReset: (tape) => {
             restore(tape);
+        },
+        addToHand: (tape) => {
+            activeTape(tape);
         }
     };
 }
