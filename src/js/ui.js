@@ -1,11 +1,14 @@
 const PIXI = require("pixi.js");
 const mainjs = require("./main");
+const FontFaceObserver = require("fontfaceobserver");
 
 
 module.exports = () => {
+    let font = new FontFaceObserver('Press Start 2P');
 
     // Button data
-    const buttons = [
+    // Todo: make this into a factory function
+    let buttons = [
         {   
             text: "decks",
             pos: [100, 40],
@@ -71,10 +74,17 @@ module.exports = () => {
         mainjs.app.stage.addChild(textSprite);
     };
 
-    function setup(arr) {
-        arr.forEach((obj) => {
-            createBtns(obj);
-        })
+    function setup(x, y) {
+        font.load().then(function () {
+            buttons.forEach((btn) => {
+                createBtns(btn);
+            })
+            setupMenus(x, y);
+            initMenu();
+        }, function () {
+            console.log('Font is not available');
+        });
+        
     }
 
 
@@ -100,6 +110,7 @@ module.exports = () => {
 
 
         menuBg.mouseover = () => {
+            console.log("hit detected");
             btn.hover = true;
         }
 
@@ -132,9 +143,7 @@ module.exports = () => {
 
     return {
         init: (x, y) => {
-            setupMenus(x, y);
-            setup(buttons);
-            initMenu();
+            setup(x, y);
         }
     }
 }
