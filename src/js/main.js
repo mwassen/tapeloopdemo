@@ -26,6 +26,12 @@ let hand = {
 	item: null,
 	initPos: []
 };
+let tableState = {
+	size: null,
+	decks: [],
+	tapes: null
+};
+
 let state;
 
 // Create a Pixi Application
@@ -52,21 +58,21 @@ function setup() {
 	exports.loadFromSheet = loadFromSheet;
 
 	// Load elements
-	
 	const tableBg = table();
-	const tapes = tapeFactory();
-	const tapedeck = playerFactory(tapes);
-	const hammer = toolFactory("hammer");
 	const interface = userI();
+	// tableState.tapes = tapeFactory();
+	tableState.decks.push(playerFactory());
+	// const hammer = toolFactory("hammer");
+
 
 	// Initialise elements
 	tableBg.init();
-	tapedeck.init();
-	hammer.init();
-	tapes.init();
-	interface.init(tableBg.width(), tableBg.height());
-
-	// console.log(tableBg.height());
+	tableState.size = [tableBg.width(), tableBg.height()];
+	interface.init(tableState.size);
+	tableState.decks[0].initPositions();
+	tableState.decks[0].init(tableState.size);
+	// hammer.init();
+	// tableState.tapes.init();
 
 	// Load the play state into gameLoop
 	state = play;
@@ -98,3 +104,4 @@ function play(delta) {
 // Exports to modules
 exports.hand = hand;
 exports.app = app;
+exports.tState = tableState;

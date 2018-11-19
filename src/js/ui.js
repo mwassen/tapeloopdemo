@@ -1,10 +1,12 @@
 const PIXI = require("pixi.js");
 const mainjs = require("./main");
+const playerFactory = require("./playerFactory");
 const FontFaceObserver = require("fontfaceobserver");
 
 
 module.exports = () => {
     let font = new FontFaceObserver('Press Start 2P');
+    let tableSize = [];
 
     // Button data
     // Todo: make this into a factory function
@@ -13,17 +15,58 @@ module.exports = () => {
             text: "decks",
             pos: [100, 40],
             menu: null,
+            menuSize: [150, 130],
             hover: null,
             sprite: null,
             // Adds ability to add/remove tapedecks from table
             populate: () => {
-                return [];
+                let addDeck = new PIXI.Text("add deck", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"}); 
+                let removeDeck = new PIXI.Text("remove deck", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"});
+                let resetTable = new PIXI.Text("reset table", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"}); 
+                let btnArr = [addDeck, removeDeck, resetTable];
+
+                btnArr.forEach((btn, ind) => {
+                    btn.position.set(30, 30 * (ind + 1));
+                    btn.interactive = true;
+                    btn.buttonMode = true;
+                    btn.hitArea = new PIXI.Rectangle(0, -10, btn.width, btn.height + 20);
+                    btn.mouseover = () => {
+                        btn.style.fill = "blue";
+                    };
+                    btn.mouseout = () => {
+                        btn.style.fill = "white";
+                    };
+                    btn.mouseup = () => {
+                        btn.style.fill = "blue";
+                    };
+                })
+
+                addDeck.mousedown = () => {
+                    addDeck.style.fill = "red";
+                    // TODO add container that stores tapes behind the UI
+                    let newDeck = playerFactory();
+                    newDeck.newPlayer();
+                    mainjs.tState.decks.push(newDeck);
+                };
+
+                removeDeck.mousedown = () => {
+                    let deckObj = playerFactory();
+                    deckObj.delPlayer();
+                    removeDeck.style.fill = "red";
+                };
+
+                resetTable.mousedown = () => {
+                    resetTable.style.fill = "red";
+                };
+
+                return btnArr;
             }
         },
         {   
             text: "tapes",
             pos: [200, 40],
             menu: null,
+            menuSize: [300, 500],
             hover: null,
             sprite: null,
             // Select from tape catalogue
@@ -35,6 +78,7 @@ module.exports = () => {
             text: "tools",
             pos: [300, 40],
             menu: null,
+            menuSize: [300, 500],
             hover: null,
             sprite: null,
             // Select tools
@@ -74,33 +118,37 @@ module.exports = () => {
         mainjs.app.stage.addChild(textSprite);
     };
 
-    function setup(x, y) {
+    function setup() {
+        // Ensures font is loaded before rendering elements
         font.load().then(function () {
+            // console.log("font loaded");
             buttons.forEach((btn) => {
                 createBtns(btn);
             })
-            setupMenus(x, y);
+            setupMenus();
             initMenu();
         }, function () {
             console.log('Font is not available');
-        });
-        
+            buttons.forEach((btn) => {
+                createBtns(btn);
+            })
+            setupMenus();
+            initMenu();
+        });        
     }
 
-
     // Menus
-    function menuBuilder(btn, x, y) {
+    function menuBuilder(btn) {
         const curMenu = new PIXI.Container();
         const menuBg = new PIXI.Graphics();
 
 
         menuBg.beginFill(0x000000);
         menuBg.fillAlpha = 0.75;
-        menuBg.drawRect(0, 0, 450, 500);
+        menuBg.drawRect(0, 0, ...btn.menuSize);
         curMenu.addChild(menuBg);
         curMenu.visible = false;
-        menuBg.interactive = true;
-        menuBg.hitArea = new PIXI.Rectangle(0, 0, curMenu.width, curMenu.height);
+        curMenu.interactive = true;
         btn.hover = false;
 
 
@@ -109,28 +157,24 @@ module.exports = () => {
         });
 
 
-        menuBg.mouseover = () => {
-            console.log("hit detected");
+        curMenu.mouseover = () => {
             btn.hover = true;
         }
 
-        menuBg.mouseout = () => {
+        curMenu.mouseout = () => {
             btn.hover = false;
             curMenu.visible = false;
             btn.sprite.style.fill = "white";
         }
-
-        // curMenu
-        //     .on("pointerover", mouseOver);
 
         curMenu.position.set(btn.pos[0], btn.pos[1] + 20);
 
         btn.menu = curMenu;
     }
 
-    function setupMenus(x, y) {
+    function setupMenus() {
         buttons.forEach((cur) => {
-            menuBuilder(cur, x, y);
+            menuBuilder(cur);
         })
     }
 
@@ -139,11 +183,17 @@ module.exports = () => {
             mainjs.app.stage.addChild(cur.menu);
         })
     };
+
+    // function firstPlayer() {
+    //     let tapedeck1 = playerFactory.
+    // }
     
 
     return {
-        init: (x, y) => {
-            setup(x, y);
+        init: (size) => {
+            tableSize = size;
+            setup();
+            // firstPlayer();
         }
     }
 }
