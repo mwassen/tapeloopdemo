@@ -16,7 +16,7 @@ module.exports = () => {
             text: "decks",
             pos: [100, 40],
             menu: null,
-            menuSize: [150, 130],
+            menuSize: [200, 130],
             hover: null,
             sprite: null,
             // Adds ability to add/remove tapedecks from table
@@ -30,7 +30,7 @@ module.exports = () => {
                     btn.position.set(30, 30 * (ind + 1));
                     btn.interactive = true;
                     btn.buttonMode = true;
-                    btn.hitArea = new PIXI.Rectangle(0, -10, btn.width, btn.height + 20);
+                    btn.hitArea = new PIXI.Rectangle(0, -10, 150, btn.height + 20);
                     btn.mouseover = () => {
                         btn.style.fill = 0xe25822;
                     };
@@ -48,16 +48,21 @@ module.exports = () => {
                     let newDeck = playerFactory();
                     newDeck.newPlayer();
                     mainjs.tState.decks.push(newDeck);
+                    // console.log(mainjs.tState.decks);
                 };
 
                 removeDeck.mousedown = () => {
-                    let deckObj = playerFactory();
+                    // console.log(mainjs.tState.decks);
+                    let deckArr = mainjs.tState.decks;
+                    let deckObj = deckArr.splice(deckArr.length - 1, 1)[0];
+                    // console.log(deckObj);
                     deckObj.delPlayer();
                     removeDeck.style.fill = "blue";
                 };
 
                 resetTable.mousedown = () => {
                     resetTable.style.fill = "blue";
+                    location.reload();
                 };
 
                 return btnArr;
@@ -67,7 +72,7 @@ module.exports = () => {
             text: "tapes",
             pos: [200, 40],
             menu: null,
-            menuSize: [300, 500],
+            menuSize: [200, 500],
             hover: null,
             sprite: null,
             // Select from tape catalogue
@@ -102,7 +107,7 @@ module.exports = () => {
                     tapeBtn.addChild(name);
                     tapeBtn.interactive = true;
                     tapeBtn.buttonMode = true;
-                    tapeBtn.hitArea = new PIXI.Rectangle(0, 0, tapeBtn.width, tapeBtn.height);
+                    tapeBtn.hitArea = new PIXI.Rectangle(0, 0, 175, tapeBtn.height);
                     tapeBtn.position.set(15, ind * 65);
 
                     tapeBtn.mouseover = () => {
@@ -131,7 +136,7 @@ module.exports = () => {
             text: "tools",
             pos: [300, 40],
             menu: null,
-            menuSize: [300, 500],
+            menuSize: [200, 500],
             hover: null,
             sprite: null,
             // Select tools

@@ -11,6 +11,7 @@
   "dependencies": {
     "fontfaceobserver": "^2.0.13",
     "pixi.js": "^4.8.2",
+    "recorder-js": "^1.0.7",
     "tone": "^0.12.80"
   },
   "devDependencies": {

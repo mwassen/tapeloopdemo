@@ -2,7 +2,7 @@
 /* global require */
 const PIXI = require("pixi.js");
 const tapeFactory = require("./tapeFactory");
-const toolFactory = require("./toolFactory");
+// const toolFactory = require("./toolFactory");
 const playerFactory = require("./playerFactory");
 const table = require("./bg");
 const userI = require("./ui");
@@ -26,6 +26,7 @@ let hand = {
 	item: null,
 	initPos: []
 };
+
 let tableState = {
 	size: null,
 	decks: [],

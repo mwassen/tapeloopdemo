@@ -1,28 +1,36 @@
 const PIXI = require("pixi.js");
-const mainjs = require("./main.js");
+const mainjs = require("./main");
 const audioEngine = require("./audioEngine");
 
 let positions = [];
 let lastPos = [];
+let allDecksContainer;
 let playerArr = [];
-let deckContainer;
 
-function setupPositions(size) {
+
+
+function setupPositions() {
+    // TODO - Loop over W & H to halve this function
+    // Retreives loaded table size
     let tWidth = mainjs.tState.size[0];
     let tHeight = mainjs.tState.size[1];
 
+    // Checks how many cells of min 300px are available
     let xAmount = Math.floor(tWidth / 300);
     let yAmount = Math.floor(tHeight / 300);
 
+    // Assigns cell size based on table size
     let boxX = tWidth / xAmount;
     let boxY = tHeight / yAmount;
 
-    // Maybe table should be a container?
+    // Calculates distance between window and table
+    // TODO - Maybe table should be a container?
     let tableDiffx = (window.innerWidth - tWidth) / 2;
     let tableDiffy = (window.innerHeight - tHeight) / 2;
 
     let output = [];
 
+    // Loops over available cells + adds the center point of each cell to output
     for (let y = 0; y < yAmount; y++) {
         for (let x = 0; x < xAmount; x++) {
             let xPos = (x * boxX) + (boxX / 2) + tableDiffx;
@@ -36,31 +44,74 @@ function setupPositions(size) {
 
 module.exports = () => {
     // This needs to be global, this module will be instanced...
-    let activeTape = null;
+    let player = null;
+    let playerBg = null;
 
     function deckInit() {
-        deckContainer = new PIXI.Container();
-        mainjs.app.stage.addChild(deckContainer);
-
+        allDecksContainer = new PIXI.Container();
+        mainjs.app.stage.addChild(allDecksContainer);
     }
 
     function addPlayer() {
-        const curSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
-        curSprite.anchor.set(0.5);
-        curSprite.scale.set(0.3, 0.3);
-        curSprite.rotation = (Math.random() - 0.5) * 0.2;
-        let deckPos = positions.splice(0, 1);
-        if (deckPos[0] == undefined) {
+        // Initialise deck sprite and setup anchor and scale
+        let singleDeckContainer = new PIXI.Container();
+        const deckSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
+        deckSprite.anchor.set(0.5);
+        deckSprite.scale.set(0.3, 0.3);
+
+        playerBg = new PIXI.Graphics();
+        playerBg.beginFill(0xe25822);
+        playerBg.drawRoundedRect(-(deckSprite.width / 2) - 4, -(deckSprite.height / 2) - 4, deckSprite.width + 8, deckSprite.height + 8, 15);
+
+        playerBg.visible = false;
+
+        
+        singleDeckContainer.addChild(playerBg);
+        singleDeckContainer.addChild(deckSprite);
+        
+
+        // Randomise deck rotations
+        singleDeckContainer.rotation = (Math.random() - 0.5) * 0.15;
+
+        // Load preset position from array
+        let defPos = positions.splice(0, 1)[0];
+
+        // Stop function if table is full
+        if (defPos == undefined) {
             console.log("no space on table");
             return;
         }
-        lastPos.push(deckPos[0]);
-        // console.log(positions);
-        // console.log(lastPos);
-        curSprite.position.set(...deckPos[0]);
-        curSprite.interactive = true;
-        curSprite.mousedown = function() {
+
+        // Add some small random variance in the positions
+        let deckPos = defPos.map(cur => {
+            return cur + Math.floor((Math.random() - 0.5) * 25);
+        });
+
+        // Save preset position for reuse if deleted & set position
+        lastPos.push(defPos);
+        singleDeckContainer.position.set(...deckPos);
+        
+
+        // TODO - Add higher order functions here
+        singleDeckContainer.interactive = true;
+        singleDeckContainer.mouseover = () => {
             if(mainjs.hand.active) {
+                singleDeckContainer.buttonMode = true;
+                playerBg.visible = true;
+            }
+        }
+
+        singleDeckContainer.mouseout = () => {
+            if(mainjs.hand.active) {
+                singleDeckContainer.buttonMode = false;
+                playerBg.visible = false;
+            }
+        }
+
+        singleDeckContainer.mousedown = () => {
+            if(mainjs.hand.active) {
+                singleDeckContainer.buttonMode = false;
+                playerBg.visible = false;
                 if(mainjs.hand.tool) {
                     initEffect(mainjs.hand);
                 } else {
@@ -68,40 +119,42 @@ module.exports = () => {
                 }
             }
         };
-        playerArr.push(curSprite);
-        deckContainer.addChild(curSprite)
-        mainjs.tState.decks.push(curSprite);
+        playerArr.push(singleDeckContainer);
+        allDecksContainer.addChild(singleDeckContainer);
     };
 
     function removePlayer() {
+
+        // Ensures that one deck is always on the table
         if (playerArr.length > 1) {
+
+            // If a player is active on this deck, stop it
+            if (player) {
+                player.stop()
+            }
+
+            // Remove sprite from decks PIXI container
             let lastPlayer = playerArr.splice(playerArr.length - 1, 1);
-            deckContainer.removeChild(lastPlayer[0]);
+            allDecksContainer.removeChild(lastPlayer[0]);
             positions.unshift(...lastPos.splice(lastPos.length - 1, 1));
-            // console.log("DEL - available positions: " + positions);
-            // console.log("DEL - last used position: " + lastPos);
+
         } else {
             console.log("can't have an empty table");
         }
-        
     }
 
     function launchTape(tape) {
         tape.item.sprite.visible = false;
-        tape.item.sprite.position.set(...tape.initPos);
+
+        if (player) {
+            player.stop();
+        }
         
-        // mainjs.tState.tapes.tapeReset(tape);
-        let player = audioEngine(tape.item.sounds);
+        player = audioEngine(tape.item.sounds);
         player.switchLoop(0);
     
-        // maybe need a global variable that stores currently active tapedecks + tapes
+        // TODO - maybe need a global variable that stores currently active tapedecks + tapes
         resetHand(mainjs.hand);
-    };
-
-    function initEffect(handState) {
-        handState.item.position.set(...handState.initPos);
-        handState.item.interactive = true;
-        resetHand(handState);
     };
 
     function resetHand(handState) {
