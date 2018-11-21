@@ -21,6 +21,8 @@ module.exports = () => {
             sprite: null,
             // Adds ability to add/remove tapedecks from table
             populate: () => {
+                // TODO - Add small buttons to the left-side of text
+
                 let addDeck = new PIXI.Text("add deck", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"}); 
                 let removeDeck = new PIXI.Text("remove deck", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"});
                 let resetTable = new PIXI.Text("reset table", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"}); 
@@ -43,21 +45,31 @@ module.exports = () => {
                 })
 
                 addDeck.mousedown = () => {
+                    let deckArr = mainjs.tState.decks;
+
                     addDeck.style.fill = "blue";
                     // TODO add container that stores tapes behind the UI
                     let newDeck = playerFactory();
+
+                    if (!newDeck.availPos()) {
+                        console.log("no space on table");
+                        return;
+                    }
                     newDeck.newPlayer();
-                    mainjs.tState.decks.push(newDeck);
-                    // console.log(mainjs.tState.decks);
+                    deckArr.push(newDeck);
                 };
 
                 removeDeck.mousedown = () => {
-                    // console.log(mainjs.tState.decks);
                     let deckArr = mainjs.tState.decks;
-                    let deckObj = deckArr.splice(deckArr.length - 1, 1)[0];
-                    // console.log(deckObj);
-                    deckObj.delPlayer();
                     removeDeck.style.fill = "blue";
+
+                    if (deckArr.length < 2) {
+                        console.log("can't have an empty table");
+                        return;
+                    };
+
+                    let deckObj = deckArr.splice(deckArr.length - 1, 1)[0];
+                    deckObj.delPlayer();
                 };
 
                 resetTable.mousedown = () => {
@@ -77,6 +89,8 @@ module.exports = () => {
             sprite: null,
             // Select from tape catalogue
             populate: () => {
+                // TODO - Make tape menu sprites significantly bigger and add labels on hover
+                
                 let tapeFact = tapeFactory();
                 let tapeArray = tapeFact.menuInit();
                 let fullContainer = new PIXI.Container();
@@ -95,7 +109,7 @@ module.exports = () => {
                     sprite.scale.set(0.2);
 
                     tapeBg.beginFill(0xe25822);
-                    tapeBg.drawRect(-2, -2, sprite.width + 4, sprite.height + 4);
+                    tapeBg.drawRoundedRect(-2, -2, sprite.width + 4, sprite.height + 4, 3);
                     tapeBg.visible = false;
                     
 
@@ -241,17 +255,11 @@ module.exports = () => {
             mainjs.app.stage.addChild(cur.menu);
         })
     };
-
-    // function firstPlayer() {
-    //     let tapedeck1 = playerFactory.
-    // }
     
-
     return {
         init: (size) => {
             tableSize = size;
             setup();
-            // firstPlayer();
         }
     }
 }

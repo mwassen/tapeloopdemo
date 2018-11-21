@@ -46,6 +46,8 @@ module.exports = () => {
     // This needs to be global, this module will be instanced...
     let player = null;
     let playerBg = null;
+    let singleDeckContainer = new PIXI.Container();
+    let deckInsert;
 
     function deckInit() {
         allDecksContainer = new PIXI.Container();
@@ -53,21 +55,27 @@ module.exports = () => {
     }
 
     function addPlayer() {
+        // TODO - Try importing sprites at original resolution
         // Initialise deck sprite and setup anchor and scale
-        let singleDeckContainer = new PIXI.Container();
-        const deckSprite = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck.png"]);
-        deckSprite.anchor.set(0.5);
-        deckSprite.scale.set(0.3, 0.3);
+        // let singleDeckContainer = new PIXI.Container();
+        let deckBody = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck-body.png"]);
+        deckInsert = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-open.png"]);
+        deckBody.anchor.set(0.5);
+        deckBody.scale.set(0.3, 0.3);
+        deckInsert.anchor.set(0.5);
+        deckInsert.scale.set(0.3, 0.3);
+        deckInsert.position.set(0, 45);
 
         playerBg = new PIXI.Graphics();
         playerBg.beginFill(0xe25822);
-        playerBg.drawRoundedRect(-(deckSprite.width / 2) - 4, -(deckSprite.height / 2) - 4, deckSprite.width + 8, deckSprite.height + 8, 15);
+        playerBg.drawRoundedRect((-deckBody.width / 2) - 4, (-deckBody.height / 2) - 4, deckBody.width + 8, deckBody.height + 8, 15);
 
         playerBg.visible = false;
 
         
         singleDeckContainer.addChild(playerBg);
-        singleDeckContainer.addChild(deckSprite);
+        singleDeckContainer.addChild(deckBody);
+        singleDeckContainer.addChild(deckInsert);
         
 
         // Randomise deck rotations
@@ -76,11 +84,11 @@ module.exports = () => {
         // Load preset position from array
         let defPos = positions.splice(0, 1)[0];
 
-        // Stop function if table is full
-        if (defPos == undefined) {
-            console.log("no space on table");
-            return;
-        }
+        // // Stop function if table is full
+        // if (defPos == undefined) {
+        //     console.log("no space on table");
+        //     return null;
+        // }
 
         // Add some small random variance in the positions
         let deckPos = defPos.map(cur => {
@@ -93,6 +101,7 @@ module.exports = () => {
         
 
         // TODO - Add higher order functions here
+        // Adds cursor events to decks
         singleDeckContainer.interactive = true;
         singleDeckContainer.mouseover = () => {
             if(mainjs.hand.active) {
@@ -124,35 +133,65 @@ module.exports = () => {
     };
 
     function removePlayer() {
-
-        // Ensures that one deck is always on the table
-        if (playerArr.length > 1) {
-
-            // If a player is active on this deck, stop it
-            if (player) {
-                player.stop()
-            }
-
-            // Remove sprite from decks PIXI container
-            let lastPlayer = playerArr.splice(playerArr.length - 1, 1);
-            allDecksContainer.removeChild(lastPlayer[0]);
-            positions.unshift(...lastPos.splice(lastPos.length - 1, 1));
-
-        } else {
-            console.log("can't have an empty table");
+        // If a player is active on this deck, stop it
+        if (player) {
+            player.stop()
         }
+
+        // Remove sprite from decks PIXI container
+        let lastPlayer = playerArr.splice(playerArr.length - 1, 1);
+        allDecksContainer.removeChild(lastPlayer[0]);
+        positions.unshift(...lastPos.splice(lastPos.length - 1, 1));
     }
 
     function launchTape(tape) {
+        // mainjs.mainLoader.load(function(loader, resources) {
+        //     resources["./src/assets/sound/effects/tape-insert.ogg"].sound.play();
+        // });
+        // Maybe this should be preloaded?
+        let deckTray = new PIXI.Container();
+        let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
+        let deckWindow = new PIXI.Graphics();
+        let tapeSprite = new PIXI.Sprite();
+
+        tapeSprite.texture = tape.item.sprite.texture;
+        tapeSprite.anchor.set(0.5);
+        tapeSprite.scale.set(0.25);
+        tapeSprite.position.set(0, 50);
+
+        deckInsertClosed.anchor.set(0.5);
+        deckInsertClosed.scale.set(0.3, 0.3);
+        deckInsertClosed.position.set(0, 45);
+
+        
+
+        deckWindow.beginFill("black");
+        deckWindow.alpha = 0.75;
+        deckWindow.drawRect(-124, 76, 248, 136);
+        deckWindow.scale.set(0.3, 0.3);
+
+        deckTray.addChild(tapeSprite);
+        deckTray.addChild(deckWindow);
+        deckTray.addChild(deckInsertClosed);
+        
+        
+
+        singleDeckContainer.removeChild(deckInsert);
+        singleDeckContainer.addChild(deckTray);
+        mainjs.sounds.insert.play();
+        
         tape.item.sprite.visible = false;
 
+        // If already playing, stop
         if (player) {
             player.stop();
         }
         
+        // Load new instance of audioengine and play
         player = audioEngine(tape.item.sounds);
         player.switchLoop(0);
     
+        // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes
         resetHand(mainjs.hand);
     };
@@ -176,7 +215,10 @@ module.exports = () => {
             addPlayer();
         },
         delPlayer: () => {
-            removePlayer();
+            return removePlayer();
+        },
+        availPos: () => {
+            return positions.length < 1 ? false : true;
         }
     }
 }

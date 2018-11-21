@@ -1,7 +1,8 @@
 // Modules
 /* global require */
 const PIXI = require("pixi.js");
-const tapeFactory = require("./tapeFactory");
+const {Howl, Howler} = require("howler");
+// const tapeFactory = require("./tapeFactory");
 // const toolFactory = require("./toolFactory");
 const playerFactory = require("./playerFactory");
 const table = require("./bg");
@@ -9,16 +10,15 @@ const userI = require("./ui");
 
 // Aliases
 let Application = PIXI.Application,
-	Container = PIXI.Container,
-	loader = PIXI.loader,
-	resources = PIXI.loader.resources,
-	Graphics = PIXI.Graphics,
-	TextureCache = PIXI.utils.TextureCache,
-	Sprite = PIXI.Sprite,
-	Text = PIXI.Text,
-	TextStyle = PIXI.TextStyle;
+	// Container = PIXI.Container,
+	loader = PIXI.loader;
+	// resources = PIXI.loader.resources,
+	// Graphics = PIXI.Graphics,
+	// TextureCache = PIXI.utils.TextureCache,
+	// Sprite = PIXI.Sprite,
+	// Text = PIXI.Text,
+	// TextStyle = PIXI.TextStyle;
 	
-
 // Global Variables
 let hand = {
 	active: false,
@@ -26,6 +26,13 @@ let hand = {
 	item: null,
 	initPos: []
 };
+
+let soundFx = {
+	insert: new Howl({
+		src: ["./src/assets/sound/effects/tape-insert.ogg"],
+		volume: 0.5
+	})
+}
 
 let tableState = {
 	size: null,
@@ -45,9 +52,12 @@ let app = new Application({
 	resolution: 1
 });
 
+
+
 // Load assets and launch setup
 loader
 	.add("./src/assets/sprites/sheetv1.json")
+	// .add("./src/assets/sound/effects/tape-insert.ogg")
 	.load(setup);
 
 // Append the canvas
@@ -106,3 +116,5 @@ function play(delta) {
 exports.hand = hand;
 exports.app = app;
 exports.tState = tableState;
+exports.sounds = soundFx;
+// exports.mainLoader = loader;
