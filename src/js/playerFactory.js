@@ -48,6 +48,7 @@ module.exports = () => {
     let playerBg = null;
     let singleDeckContainer = new PIXI.Container();
     let deckInsert;
+    let deckBtns = [];
 
     function deckInit() {
         allDecksContainer = new PIXI.Container();
@@ -56,6 +57,7 @@ module.exports = () => {
 
     function addPlayer() {
         // TODO - Try importing sprites at original resolution
+        // TODO - Add player Builder function (this one is getting bloated)
         // Initialise deck sprite and setup anchor and scale
         // let singleDeckContainer = new PIXI.Container();
         let deckBody = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck-body.png"]);
@@ -72,10 +74,62 @@ module.exports = () => {
 
         playerBg.visible = false;
 
+        // Initialise control buttons
+        let controlBtns = new PIXI.Container();
+        for (let i = 1; i <= 6; i++) {
+            let BtnCont = new PIXI.Container();
+            let Btn = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck-buttons" + i + ".png"]);
+            let bgArr = [new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics()]
+            // let bg = new PIXI.Graphics();
+            // let bgHover = new PIXI.Graphics();
+            // let bgClick = 
+
+            bgArr.forEach((cur, ind) => {
+                switch (ind) {
+                    case 0:
+                        cur.beginFill(0x696969);
+                        break;
+                    case 1:
+                        cur.beginFill(0xD3D3D3);
+                        cur.visible = false;
+                        break;
+                    case 2:
+                        cur.beginFill(0xe25822);
+                        cur.visible = false;
+                        break;
+                    case 3:
+                        cur.beginFill(0xB22222);
+                        cur.visible = false;
+                }
+                cur.drawRect(- Btn.width / 2, - Btn.height / 2, Btn.width, Btn.height - 5);
+                BtnCont.addChild(cur);
+            })
+
+            // bg.beginFill(0x696969);
+            // bg.drawRect(- Btn.width / 2, - Btn.height / 2, Btn.width, Btn.height - 5);
+
+            // bgHover.beginFill(0xe25822);
+            // bgHover.drawRect(- Btn.width / 2, - Btn.height / 2, Btn.width, Btn.height - 5);
+            // bgHover.visible = false;
+
+            // BtnCont.addChild(bg);
+            // BtnCont.addChild(bgHover);
+            BtnCont.addChild(Btn);
+            BtnCont.scale.set(0.3);
+            Btn.anchor.set(0.5);
+            BtnCont.position.set(i * 20, 0);
+            deckBtns.push(BtnCont);
+            controlBtns.addChild(BtnCont);
+        };
+
+        controlBtns.position.set(-60, 120)
+
         
         singleDeckContainer.addChild(playerBg);
         singleDeckContainer.addChild(deckBody);
+        singleDeckContainer.addChild(controlBtns);
         singleDeckContainer.addChild(deckInsert);
+
         
 
         // Randomise deck rotations
@@ -153,6 +207,7 @@ module.exports = () => {
         let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
         let deckWindow = new PIXI.Graphics();
         let tapeSprite = new PIXI.Sprite();
+        let playingState = false;
 
         tapeSprite.texture = tape.item.sprite.texture;
         tapeSprite.anchor.set(0.5);
@@ -173,12 +228,47 @@ module.exports = () => {
         deckTray.addChild(tapeSprite);
         deckTray.addChild(deckWindow);
         deckTray.addChild(deckInsertClosed);
+
+        deckBtns.forEach((cur, ind) => {
+            cur.children[0].visible = false;
+            cur.children[1].visible = true;
+            cur.interactive = true;
+            cur.buttonMode = true;
+
+            cur.mouseover = () => {
+                cur.children[2].visible = true;
+            };
+
+            cur.mouseout = () => {
+                cur.children[2].visible = false;
+            };
+
+            cur.mousedown = () => {
+                cur.children[3].visible = true;
+                if(ind == 0) {
+                    if (playingState == false) {
+                        player.play();
+                        playingState = true;
+                    } else {
+                        player.stop();
+                        playingState = false;
+                    }
+                } else {
+                    player.switchLoop(ind - 1);
+                }
+                
+            };
+
+            cur.mouseup = () => {
+                cur.children[3].visible = false;
+            };
+        })
         
         
 
         singleDeckContainer.removeChild(deckInsert);
         singleDeckContainer.addChild(deckTray);
-        mainjs.sounds.insert.play();
+        
         
         tape.item.sprite.visible = false;
 
@@ -189,7 +279,9 @@ module.exports = () => {
         
         // Load new instance of audioengine and play
         player = audioEngine(tape.item.sounds);
+        mainjs.sounds.insert.play();
         player.switchLoop(0);
+        playingState = true;
     
         // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes

@@ -28,6 +28,7 @@ let hand = {
 };
 
 let soundFx = {
+	// Tape Cassette Insert by Fats Million - https://freesound.org/people/Fats%20Million/sounds/187788/
 	insert: new Howl({
 		src: ["./src/assets/sound/effects/tape-insert.ogg"],
 		volume: 0.5
