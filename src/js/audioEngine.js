@@ -70,6 +70,9 @@ module.exports = (loop) => {
         },
         clearFx: () => {
             Fx.scrub();
+        },
+        status: () => {
+            return soundEngine;
         }
     }
 }

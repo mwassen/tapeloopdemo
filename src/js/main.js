@@ -1,22 +1,24 @@
 // Modules
 /* global require */
 const PIXI = require("pixi.js");
-const tapeFactory = require("./tapeFactory");
-const toolFactory = require("./toolFactory");
+const {Howl, Howler} = require("howler");
+// const tapeFactory = require("./tapeFactory");
+// const toolFactory = require("./toolFactory");
 const playerFactory = require("./playerFactory");
+const table = require("./bg");
+const userI = require("./ui");
 
 // Aliases
 let Application = PIXI.Application,
-	Container = PIXI.Container,
-	loader = PIXI.loader,
-	resources = PIXI.loader.resources,
-	Graphics = PIXI.Graphics,
-	TextureCache = PIXI.utils.TextureCache,
-	Sprite = PIXI.Sprite,
-	Text = PIXI.Text,
-	TextStyle = PIXI.TextStyle;
+	// Container = PIXI.Container,
+	loader = PIXI.loader;
+	// resources = PIXI.loader.resources,
+	// Graphics = PIXI.Graphics,
+	// TextureCache = PIXI.utils.TextureCache,
+	// Sprite = PIXI.Sprite,
+	// Text = PIXI.Text,
+	// TextStyle = PIXI.TextStyle;
 	
-
 // Global Variables
 let hand = {
 	active: false,
@@ -24,21 +26,43 @@ let hand = {
 	item: null,
 	initPos: []
 };
+
+let soundFx = {
+	// Tape Cassette Insert by Fats Million - https://freesound.org/people/Fats%20Million/sounds/187788/
+	insert: new Howl({
+		src: ["./src/assets/sound/effects/tape-insert.ogg"],
+		volume: 0.5
+	}),
+	// Tape machine button press metal by hanneswannerberger - https://freesound.org/people/hanneswannerberger/sounds/275631/
+	button: new Howl({
+		src: ["./src/assets/sound/effects/tape-button.ogg"],
+		volume: 0.15
+	})
+}
+
+let tableState = {
+	size: null,
+	decks: [],
+	tapes: null
+};
+
 let state;
 
 // Create a Pixi Application
 let app = new Application({
 	width: window.innerWidth,
 	height: window.innerHeight,
-	antialiasing: true,
+	antialiasing: false,
 	transparent: false,
-	backgroundColor: 0xfafafa,
 	resolution: 1
 });
+
+
 
 // Load assets and launch setup
 loader
 	.add("./src/assets/sprites/sheetv1.json")
+	// .add("./src/assets/sound/effects/tape-insert.ogg")
 	.load(setup);
 
 // Append the canvas
@@ -50,14 +74,21 @@ function setup() {
 	exports.loadFromSheet = loadFromSheet;
 
 	// Load elements
-	const tapes = tapeFactory();
-	const tapedeck = playerFactory(tapes);
-	const hammer = toolFactory("hammer");
+	const tableBg = table();
+	const interface = userI();
+	// tableState.tapes = tapeFactory();
+	tableState.decks.push(playerFactory());
+	// const hammer = toolFactory("hammer");
+
 
 	// Initialise elements
-	tapedeck.init();
-	hammer.init();
-	tapes.init();
+	tableBg.init();
+	tableState.size = [tableBg.width(), tableBg.height()];
+	interface.init(tableState.size);
+	tableState.decks[0].initPositions();
+	tableState.decks[0].init(tableState.size);
+	// hammer.init();
+	// tableState.tapes.init();
 
 	// Load the play state into gameLoop
 	state = play;
@@ -89,3 +120,6 @@ function play(delta) {
 // Exports to modules
 exports.hand = hand;
 exports.app = app;
+exports.tState = tableState;
+exports.sounds = soundFx;
+// exports.mainLoader = loader;
