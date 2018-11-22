@@ -3,8 +3,9 @@ const mainjs = require("./main");
 
 module.exports = () => {
     const tapeDb = [
-        "mswsn1",
-        "cnsglo1"
+        "cnsglo1",
+        "conet1",
+        "mswsn1"
     ];
 
     let tapes = [];

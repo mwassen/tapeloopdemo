@@ -74,6 +74,11 @@ module.exports = () => {
 
         playerBg.visible = false;
 
+        let playerShadow = new PIXI.Graphics();
+        playerShadow.beginFill(0x000000);
+        playerShadow.alpha = 0.35;
+        playerShadow.drawRoundedRect((-deckBody.width / 2) - 4, (-deckBody.height / 2) + 2, deckBody.width, deckBody.height, 13);
+
         // Initialise control buttons
         let controlBtns = new PIXI.Container();
         for (let i = 1; i <= 6; i++) {
@@ -87,7 +92,7 @@ module.exports = () => {
             bgArr.forEach((cur, ind) => {
                 switch (ind) {
                     case 0:
-                        cur.beginFill(0x696969);
+                        cur.beginFill(0x343434);
                         break;
                     case 1:
                         cur.beginFill(0xD3D3D3);
@@ -117,14 +122,14 @@ module.exports = () => {
             BtnCont.addChild(Btn);
             BtnCont.scale.set(0.3);
             Btn.anchor.set(0.5);
-            BtnCont.position.set(i * 20, 0);
+            BtnCont.position.set(i * 19, 0);
             deckBtns.push(BtnCont);
             controlBtns.addChild(BtnCont);
         };
 
-        controlBtns.position.set(-60, 120)
+        controlBtns.position.set(-75, 118)
 
-        
+        singleDeckContainer.addChild(playerShadow);
         singleDeckContainer.addChild(playerBg);
         singleDeckContainer.addChild(deckBody);
         singleDeckContainer.addChild(controlBtns);
@@ -203,6 +208,8 @@ module.exports = () => {
         //     resources["./src/assets/sound/effects/tape-insert.ogg"].sound.play();
         // });
         // Maybe this should be preloaded?
+
+        // TODO - Isolate what only needs to happen the first time
         let deckTray = new PIXI.Container();
         let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
         let deckWindow = new PIXI.Graphics();
@@ -212,23 +219,27 @@ module.exports = () => {
         tapeSprite.texture = tape.item.sprite.texture;
         tapeSprite.anchor.set(0.5);
         tapeSprite.scale.set(0.25);
-        tapeSprite.position.set(0, 50);
+
+        // TODO - Change wheels positions on opensprite
+        tapeSprite.position.set(0, 52);
 
         deckInsertClosed.anchor.set(0.5);
         deckInsertClosed.scale.set(0.3, 0.3);
-        deckInsertClosed.position.set(0, 45);
+        deckInsertClosed.position.set(0, 47);
 
         
 
         deckWindow.beginFill("black");
         deckWindow.alpha = 0.75;
-        deckWindow.drawRect(-124, 76, 248, 136);
+        deckWindow.drawRect(-124, 82, 248, 137);
         deckWindow.scale.set(0.3, 0.3);
 
         deckTray.addChild(tapeSprite);
         deckTray.addChild(deckWindow);
         deckTray.addChild(deckInsertClosed);
 
+
+        // TODO - Async wait for sound buffer before activating buttons
         deckBtns.forEach((cur, ind) => {
             cur.children[0].visible = false;
             cur.children[1].visible = true;
@@ -244,6 +255,7 @@ module.exports = () => {
             };
 
             cur.mousedown = () => {
+                mainjs.sounds.button.play();
                 cur.children[3].visible = true;
                 if(ind == 0) {
                     if (playingState == false) {

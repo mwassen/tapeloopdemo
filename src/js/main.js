@@ -32,6 +32,11 @@ let soundFx = {
 	insert: new Howl({
 		src: ["./src/assets/sound/effects/tape-insert.ogg"],
 		volume: 0.5
+	}),
+	// Tape machine button press metal by hanneswannerberger - https://freesound.org/people/hanneswannerberger/sounds/275631/
+	button: new Howl({
+		src: ["./src/assets/sound/effects/tape-button.ogg"],
+		volume: 0.15
 	})
 }
 
@@ -49,7 +54,6 @@ let app = new Application({
 	height: window.innerHeight,
 	antialiasing: false,
 	transparent: false,
-	backgroundColor: 0x2F4F4F,
 	resolution: 1
 });
 

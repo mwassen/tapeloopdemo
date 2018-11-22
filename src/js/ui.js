@@ -14,7 +14,7 @@ module.exports = () => {
     let buttons = [
         {   
             text: "decks",
-            pos: [100, 40],
+            pos: [100, 35],
             menu: null,
             menuSize: [200, 130],
             hover: null,
@@ -82,9 +82,9 @@ module.exports = () => {
         },
         {   
             text: "tapes",
-            pos: [200, 40],
+            pos: [200, 35],
             menu: null,
-            menuSize: [200, 500],
+            menuSize: [145, 330],
             hover: null,
             sprite: null,
             // Select from tape catalogue
@@ -106,7 +106,7 @@ module.exports = () => {
 
                     // sprite.anchor.set(0.5);
                     // name.anchor.set(0, 0.5);
-                    sprite.scale.set(0.2);
+                    sprite.scale.set(0.25);
 
                     tapeBg.beginFill(0xe25822);
                     tapeBg.drawRoundedRect(-2, -2, sprite.width + 4, sprite.height + 4, 3);
@@ -114,15 +114,16 @@ module.exports = () => {
                     
 
                     sprite.position.set(0, 0);
+                    name.anchor.set(0.5)
 
-                    name.position.set(95, 24);
+                    name.position.set(sprite.width / 2, 80);
                     tapeBtn.addChild(tapeBg);
                     tapeBtn.addChild(sprite);
                     tapeBtn.addChild(name);
                     tapeBtn.interactive = true;
                     tapeBtn.buttonMode = true;
-                    tapeBtn.hitArea = new PIXI.Rectangle(0, 0, 175, tapeBtn.height);
-                    tapeBtn.position.set(15, ind * 65);
+                    tapeBtn.hitArea = new PIXI.Rectangle(0, 0, tapeBtn.width, tapeBtn.height);
+                    tapeBtn.position.set(0, ind * (sprite.height + name.height + 30));
 
                     tapeBtn.mouseover = () => {
                         tapeBg.visible = true;
@@ -141,23 +142,23 @@ module.exports = () => {
                     fullContainer.addChild(tapeBtn);
                 });
 
-                fullContainer.position.set(0, 15);
+                fullContainer.position.set(20, 20);
                 
                 return [fullContainer];
             }
         },
-        {   
-            text: "tools",
-            pos: [300, 40],
-            menu: null,
-            menuSize: [200, 500],
-            hover: null,
-            sprite: null,
-            // Select tools
-            populate: () => {
-                return [];
-            } 
-        }
+        // {   
+        //     text: "tools",
+        //     pos: [300, 35],
+        //     menu: null,
+        //     menuSize: [200, 500],
+        //     hover: null,
+        //     sprite: null,
+        //     // Select tools
+        //     populate: () => {
+        //         return [];
+        //     } 
+        // }
     ];
 
     function createBtns(btn) {
