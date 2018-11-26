@@ -8,6 +8,7 @@ let allDecksContainer;
 let playerArr = [];
 
 
+// TODO - Look for repeating patterns and make into functions
 
 function setupPositions() {
     // TODO - Loop over W & H to halve this function
@@ -49,6 +50,9 @@ module.exports = () => {
     let singleDeckContainer = new PIXI.Container();
     let deckInsert;
     let deckBtns = [];
+    let deckKnobs = [];
+    let mousePos = null;
+    let selectedKnob = null;
 
     function deckInit() {
         allDecksContainer = new PIXI.Container();
@@ -84,10 +88,7 @@ module.exports = () => {
         for (let i = 1; i <= 6; i++) {
             let BtnCont = new PIXI.Container();
             let Btn = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck-buttons" + i + ".png"]);
-            let bgArr = [new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics()]
-            // let bg = new PIXI.Graphics();
-            // let bgHover = new PIXI.Graphics();
-            // let bgClick = 
+            let bgArr = [new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics()];
 
             bgArr.forEach((cur, ind) => {
                 switch (ind) {
@@ -109,16 +110,6 @@ module.exports = () => {
                 cur.drawRect(- Btn.width / 2, - Btn.height / 2, Btn.width, Btn.height - 5);
                 BtnCont.addChild(cur);
             })
-
-            // bg.beginFill(0x696969);
-            // bg.drawRect(- Btn.width / 2, - Btn.height / 2, Btn.width, Btn.height - 5);
-
-            // bgHover.beginFill(0xe25822);
-            // bgHover.drawRect(- Btn.width / 2, - Btn.height / 2, Btn.width, Btn.height - 5);
-            // bgHover.visible = false;
-
-            // BtnCont.addChild(bg);
-            // BtnCont.addChild(bgHover);
             BtnCont.addChild(Btn);
             BtnCont.scale.set(0.3);
             Btn.anchor.set(0.5);
@@ -127,12 +118,58 @@ module.exports = () => {
             controlBtns.addChild(BtnCont);
         };
 
-        controlBtns.position.set(-75, 118)
+        let knobsContainer = new PIXI.Container();
+
+        for(let i = 0; i < 2; i++) {
+            let knob = new PIXI.Container();
+
+            for (let j = 0; j < 3; j++) {
+                let knobInstance = new PIXI.Graphics();
+                let fill;
+                let show = true;
+                switch (j) {
+                    case 0:
+                        fill = 0xe25822;
+                        show = false;
+                        break;
+                    case 1:
+                        fill = 0x343434;
+                        break;
+                    case 2:
+                        fill = 0xD3D3D3;
+                        show = false;
+                }
+
+                knobInstance.beginFill(fill);
+                knobInstance.drawCircle(0, 0, 11 - (j * 2));
+                knobInstance.visible = show;
+                knob.addChild(knobInstance);
+            }
+
+            let indicator = new PIXI.Graphics();
+            indicator.beginFill(0x000000);
+            indicator.drawRect(-1, 2, 2, 5);
+            knob.addChild(indicator);
+
+            knob.position.set(22 * i, 10);
+
+
+            knobsContainer.addChild(knob);
+            knob.rotation = i == 0 ? Math.PI : (Math.PI * 2 - 0.4);
+            knob.lastRot = knob.rotation;
+            knob.identity = i == 0 ? "Speed" : "Volume";
+            deckKnobs.push(knob);
+        };
+
+        knobsContainer.position.set(40, 107);
+
+        controlBtns.position.set(-75, 118);
 
         singleDeckContainer.addChild(playerShadow);
         singleDeckContainer.addChild(playerBg);
         singleDeckContainer.addChild(deckBody);
         singleDeckContainer.addChild(controlBtns);
+        singleDeckContainer.addChild(knobsContainer);
         singleDeckContainer.addChild(deckInsert);
 
         
@@ -204,16 +241,13 @@ module.exports = () => {
     }
 
     function launchTape(tape) {
-        // mainjs.mainLoader.load(function(loader, resources) {
-        //     resources["./src/assets/sound/effects/tape-insert.ogg"].sound.play();
-        // });
-        // Maybe this should be preloaded?
 
         // TODO - Isolate what only needs to happen the first time
         let deckTray = new PIXI.Container();
         let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
         let deckWindow = new PIXI.Graphics();
         let tapeSprite = new PIXI.Sprite();
+        let knobTicker = new PIXI.ticker.Ticker();
         let playingState = false;
 
         tapeSprite.texture = tape.item.sprite.texture;
@@ -275,6 +309,88 @@ module.exports = () => {
                 cur.children[3].visible = false;
             };
         })
+
+        deckKnobs.forEach((cur, ind) => {
+            cur.children[2].visible = true;
+            cur.interactive = true;
+            cur.buttonMode = true;
+            
+            let btnActive = false;
+
+            cur.label = new PIXI.Container();
+            cur.label.visible = false;
+
+            let labelBg = new PIXI.Graphics();
+            labelBg.beginFill(0x000000);
+            labelBg.alpha = 0.5;
+            
+            cur.label.addChild(labelBg);
+
+            let labelText = new PIXI.Text(cur.identity + ": ", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"});
+            labelText.position.set(5, 6);
+            cur.label.addChild(labelText);
+
+            let labelValue = new PIXI.Text("10", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"});
+            labelValue.position.set(labelText.width + 2, 6);
+            // labelValue.visible = false;
+            cur.label.addChild(labelValue);
+
+            // labelBg.drawRect(0, 0, cur.label.width + 38, 20);
+
+            cur.label.position.set(-85, 30);
+
+            cur.parent.addChild(cur.label);
+            // cur.label.visible = true;
+
+            cur.mouseover = () => {
+                cur.children[0].visible = true;
+            }
+
+            cur.mouseout = () => {
+                if (!btnActive) {
+                    cur.children[0].visible = false;
+                }
+            }
+
+            cur.mousedown = () => {
+                cur.children[0].visible = true;
+                btnActive = true;
+                cur.label.visible = true;
+                // mainjs.tState.mouseInitPos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
+
+                // mainjs.tState.knobActive = true;
+
+                knobTicker.add((delta) => knobUpdate(delta));
+                mousePos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
+                selectedKnob = cur;
+                knobTicker.start();
+            }
+
+            cur.mouseup = () => {
+                cur.children[0].visible = false;
+                btnActive = false;
+                cur.label.visible = false;
+                // mainjs.tState.knobActive = false;
+                // mainjs.tState.mouseInitPos = null;
+                knobTicker.stop();
+                mousePos = null;
+                selectedKnob = null;
+                cur.lastRot = cur.rotation;
+            }
+
+            cur.mouseupoutside = () => {
+                cur.children[0].visible = false;
+                btnActive = false;
+                cur.label.visible = false;
+
+                // mainjs.tState.knobActive = false;
+                // mainjs.tState.mouseInitPos = null;
+                knobTicker.stop();
+                mousePos = null;
+                selectedKnob = null;
+                cur.lastRot = cur.rotation;
+            }
+        })
         
         
 
@@ -298,6 +414,62 @@ module.exports = () => {
         // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes
         resetHand(mainjs.hand);
+    };
+
+    let curPos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
+    let updatedPos;
+    // let lastKnobPos = [Math.PI, 0.4];
+
+    function knobUpdate () {
+        if (updatedPos !== mainjs.app.renderer.plugins.interaction.mouse.global.y) {
+            let relativePosition = mousePos - mainjs.app.renderer.plugins.interaction.mouse.global.y;
+            if(relativePosition < 100 && relativePosition > -100) {
+                knobAdjust(relativePosition);
+            }
+            
+        }
+
+        updatedPos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
+    };
+
+    function knobAdjust (value) {
+        // console.log(value);
+        let maxHigh = (2 * Math.PI) - 0.4;
+        let rotationRads = (maxHigh * value) / 100;
+        let newRads = selectedKnob.lastRot + rotationRads;
+        function convertRange( value, r1, r2 ) { 
+            return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+        };
+        let pixelValue = selectedKnob.label.children[2];
+
+        if(newRads < maxHigh && newRads > 0.4) {
+            selectedKnob.rotation = newRads;
+        
+        } else {
+            if (newRads > maxHigh) {
+                selectedKnob.rotation = maxHigh;
+            } else {
+                selectedKnob.rotation = 0.4;
+            }
+        }
+
+        if (selectedKnob.identity == "Volume") {
+            let mod = convertRange(selectedKnob.rotation, [0.4, maxHigh], [-60, 0]).toFixed(0);
+            pixelValue.text = mod + "dB";
+            player.changeVolume(mod);
+            
+        } else {
+            let mod = convertRange(selectedKnob.rotation, [0.4, maxHigh], [0.2, 1.8]).toFixed(2);
+            pixelValue.text = mod;
+            player.changeSpeed(mod);
+
+
+        }
+
+        selectedKnob.label.children[0].clear();
+        selectedKnob.label.children[0].drawRect(0, 0, selectedKnob.label.width + 3, 20)
+        // TODO - calculate bounds for volume function
+        // changeVolume(value);
     };
 
     function resetHand(handState) {

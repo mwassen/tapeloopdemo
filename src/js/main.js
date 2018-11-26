@@ -102,7 +102,7 @@ function gameLoop(delta) {
 }
 
 function play(delta) {
-	// ToDo: Needs to have cursor dissapear
+	// TODO - Needs to have cursor dissapear
 
 	if (hand.active) {
 		let mPosX = app.renderer.plugins.interaction.mouse.global.x,

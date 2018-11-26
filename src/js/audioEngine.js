@@ -14,7 +14,7 @@ module.exports = (loop) => {
     let urls = loop,
         soundEngine = new Tone.Player({
             url: urls[0],
-            loop: true
+            loop: true,
         });
 
     // console.log(urls);
@@ -44,6 +44,7 @@ module.exports = (loop) => {
     return {
         switchLoop: (loopNr) => {
             // console.log(loopNr);
+            // TODO - don't switch entire player, just change URL.
             soundEngine.stop();
             soundEngine = new Tone.Player({
                 url: urls[loopNr],
@@ -73,6 +74,12 @@ module.exports = (loop) => {
         },
         status: () => {
             return soundEngine;
+        },
+        changeSpeed: (value) => {
+            soundEngine.playbackRate = value;
+        },
+        changeVolume: (value) => {
+            soundEngine.volume.value = value;
         }
     }
 }
