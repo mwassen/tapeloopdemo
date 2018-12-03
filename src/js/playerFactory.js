@@ -250,38 +250,11 @@ module.exports = () => {
         positions.unshift(...lastPos.splice(lastPos.length - 1, 1));
     }
 
-    function launchTape(tape) {
+    function initControls() {
 
         // TODO - Isolate what only needs to happen the first time
-        let deckTray = new PIXI.Container();
-        let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
-        let deckWindow = new PIXI.Graphics();
-        let tapeSprite = new PIXI.Sprite();
         let knobTicker = new PIXI.ticker.Ticker();
         let playingState = false;
-
-        tapeSprite.texture = tape.item.sprite.texture;
-        tapeSprite.anchor.set(0.5);
-        tapeSprite.scale.set(0.25);
-
-        // TODO - Change wheels positions on opensprite
-        tapeSprite.position.set(0, 52);
-
-        deckInsertClosed.anchor.set(0.5);
-        deckInsertClosed.scale.set(0.3, 0.3);
-        deckInsertClosed.position.set(0, 47);
-
-        
-
-        deckWindow.beginFill("black");
-        deckWindow.alpha = 0.75;
-        deckWindow.drawRect(-124, 82, 248, 137);
-        deckWindow.scale.set(0.3, 0.3);
-
-        deckTray.addChild(tapeSprite);
-        deckTray.addChild(deckWindow);
-        deckTray.addChild(deckInsertClosed);
-
 
         // TODO - Async wait for sound buffer before activating buttons
         deckBtns.forEach((cur, ind) => {
@@ -401,8 +374,38 @@ module.exports = () => {
                 cur.lastRot = cur.rotation;
             }
         })
+    }
+
+    function launchTape(tape) {
+
+        // TODO - Isolate what only needs to happen the first time
+        let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
+        let deckWindow = new PIXI.Graphics();
+        let tapeSprite = new PIXI.Sprite();
+        let playingState = false;
+
+        tapeSprite.texture = tape.item.sprite.texture;
+        tapeSprite.anchor.set(0.5);
+        tapeSprite.scale.set(0.25);
+
+        // TODO - Change wheels positions on opensprite
+        tapeSprite.position.set(0, 52);
+
+        deckInsertClosed.anchor.set(0.5);
+        deckInsertClosed.scale.set(0.3, 0.3);
+        deckInsertClosed.position.set(0, 47);
+
         
-        
+
+        deckWindow.beginFill("black");
+        deckWindow.alpha = 0.75;
+        deckWindow.drawRect(-124, 82, 248, 137);
+        deckWindow.scale.set(0.3, 0.3);
+
+        deckTray.addChild(tapeSprite);
+        deckTray.addChild(deckWindow);
+        deckTray.addChild(deckInsertClosed);
+
 
         singleDeckContainer.removeChild(deckInsert);
         singleDeckContainer.addChild(deckTray);
