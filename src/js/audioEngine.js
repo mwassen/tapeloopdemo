@@ -10,13 +10,13 @@
 let Tone = require("tone");
 
 
-module.exports = (loop) => {
-    let urls = loop,
-        soundEngine = new Tone.Player({
-            url: urls[0],
+module.exports = () => {
+    let urls;
+    let soundEngine = new Tone.Player({
             loop: true,
+            autostart: true
         });
-
+    // let active = false;
     // console.log(urls);
 
     let Fx = {
@@ -25,32 +25,31 @@ module.exports = (loop) => {
             soundEngine.disconnect();
             soundEngine.chain(...Fx.rack, Tone.Master);
         },
-        scrub: () => {
-            Fx.rack = [];
-            Fx.init();
-        },
-        dist: (amount) => {
-            Fx.rack.push(new Tone.Distortion(amount));
-            console.log(Fx.rack);
-            Fx.init();
-        },
-        verb: (amount) => {
-            Fx.rack.push(new Tone.Freeverb(amount, (Math.random() * 3000)));
-            console.log(Fx.rack);
-            Fx.init();
-        },
+        // scrub: () => {
+        //     Fx.rack = [];
+        //     Fx.init();
+        // },
+        // dist: (amount) => {
+        //     Fx.rack.push(new Tone.Distortion(amount));
+        //     console.log(Fx.rack);
+        //     Fx.init();
+        // },
+        // verb: (amount) => {
+        //     Fx.rack.push(new Tone.Freeverb(amount, (Math.random() * 3000)));
+        //     console.log(Fx.rack);
+        //     Fx.init();
+        // },
     };
 
     return {
+        loadTape: (tape) => {
+            urls = tape;
+        },
+
         switchLoop: (loopNr) => {
-            // console.log(loopNr);
-            // TODO - don't switch entire player, just change URL.
-            soundEngine.stop();
-            soundEngine = new Tone.Player({
-                url: urls[loopNr],
-                loop: true,
-                autostart: true
-            });
+            // soundEngine.autostart = true;
+            soundEngine.load(urls[loopNr]);
+    
             Fx.init();
         },
 
@@ -62,19 +61,19 @@ module.exports = (loop) => {
             soundEngine.stop();
         },
 
-        addDist: () => {
-            Fx.dist(0.1);
-        },
+        // addDist: () => {
+        //     Fx.dist(0.1);
+        // },
 
-        addRev: () => {
-            Fx.verb(0.1);
-        },
-        clearFx: () => {
-            Fx.scrub();
-        },
-        status: () => {
-            return soundEngine;
-        },
+        // addRev: () => {
+        //     Fx.verb(0.1);
+        // },
+        // clearFx: () => {
+        //     Fx.scrub();
+        // },
+        // status: () => {
+        //     return soundEngine;
+        // },
         changeSpeed: (value) => {
             soundEngine.playbackRate = value;
         },

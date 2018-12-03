@@ -256,6 +256,8 @@ module.exports = () => {
         let knobTicker = new PIXI.ticker.Ticker();
         let playingState = true;
 
+        player = audioEngine();
+
         // TODO - Async wait for sound buffer before activating buttons
         deckBtns.forEach((cur, ind) => {
             cur.children[0].visible = false;
@@ -283,7 +285,9 @@ module.exports = () => {
                         playingState = false;
                     }
                 } else {
+                    player.stop();
                     player.switchLoop(ind - 1);
+                    playingState = true;
                 }
                 
             };
@@ -377,7 +381,6 @@ module.exports = () => {
     }
 
     function launchTape(tape) {
-
         // TODO - Isolate what only needs to happen the first time
         let deckTray = new PIXI.Container();
         let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
@@ -419,7 +422,7 @@ module.exports = () => {
         }
         
         // Load new instance of audioengine and play
-        player = audioEngine(tape.item.sounds);
+        player.loadTape(tape.item.sounds);
         mainjs.sounds.insert.play();
         player.switchLoop(0);
     

@@ -14,7 +14,7 @@ module.exports = () => {
     let buttons = [
         {   
             text: "decks",
-            pos: [100, 35],
+            pos: [],
             menu: null,
             menuSize: [200, 130],
             hover: null,
@@ -82,7 +82,7 @@ module.exports = () => {
         },
         {   
             text: "tapes",
-            pos: [200, 35],
+            pos: [],
             menu: null,
             menuSize: [145, 330],
             hover: null,
@@ -161,8 +161,10 @@ module.exports = () => {
         // }
     ];
 
-    function createBtns(btn) {
+    function createBtns(btn, ind) {
         let textSprite = new PIXI.Text(btn.text, {fontFamily : 'Press Start 2P', fontSize: 16, fill : "white"}); 
+
+        btn.pos = [((window.innerWidth - tableSize[0]) / 2) + (15 + (ind * 100)), ((window.innerHeight - tableSize[1]) / 2) / 2];
 
         textSprite.position.set(...btn.pos);
         textSprite.interactive = true;
@@ -195,15 +197,15 @@ module.exports = () => {
         // Ensures font is loaded before rendering elements
         font.load().then(function () {
             // console.log("font loaded");
-            buttons.forEach((btn) => {
-                createBtns(btn);
+            buttons.forEach((btn, ind) => {
+                createBtns(btn, ind);
             })
             setupMenus();
             initMenu();
         }, function () {
             console.log('Font is not available');
-            buttons.forEach((btn) => {
-                createBtns(btn);
+            buttons.forEach((btn, ind) => {
+                createBtns(btn, ind);
             })
             setupMenus();
             initMenu();
