@@ -9,7 +9,7 @@ let playerArr = [];
 
 
 // TODO - Look for repeating patterns and make into functions
-
+// TODO - Maybe get this function into the bg file
 function setupPositions() {
     // TODO - Loop over W & H to halve this function
     // Retreives loaded table size
@@ -40,13 +40,16 @@ function setupPositions() {
         }
     }
     positions = output;
-};
+}
 
 
 module.exports = () => {
     // This needs to be global, this module will be instanced...
+
+    // Todo Avoid using globals for some of these...
     let player = null;
     let playerBg = null;
+    let active = false;
     let singleDeckContainer = new PIXI.Container();
     let deckInsert;
     let deckBtns = [];
@@ -220,13 +223,20 @@ module.exports = () => {
                 if(mainjs.hand.tool) {
                     initEffect(mainjs.hand);
                 } else {
-                    launchTape(mainjs.hand);
+                    if(active) {
+                        launchTape(mainjs.hand);
+                    } else {
+                        initControls();
+                        launchTape(mainjs.hand);
+                        active = true;
+                    }
+                    
                 }
             }
         };
         playerArr.push(singleDeckContainer);
         allDecksContainer.addChild(singleDeckContainer);
-    };
+    }
 
     function removePlayer() {
         // If a player is active on this deck, stop it
@@ -414,7 +424,7 @@ module.exports = () => {
         // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes
         resetHand(mainjs.hand);
-    };
+    }
 
     let curPos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
     let updatedPos;
@@ -430,7 +440,7 @@ module.exports = () => {
         }
 
         updatedPos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
-    };
+    }
 
     function knobAdjust (value) {
         // console.log(value);
@@ -442,9 +452,8 @@ module.exports = () => {
         };
         let pixelValue = selectedKnob.label.children[2];
 
-        if(newRads < maxHigh && newRads > 0.4) {
+        if (newRads <= maxHigh && newRads >= 0.4) {
             selectedKnob.rotation = newRads;
-        
         } else {
             if (newRads > maxHigh) {
                 selectedKnob.rotation = maxHigh;
@@ -454,9 +463,9 @@ module.exports = () => {
         }
 
         if (selectedKnob.identity == "Volume") {
-            let mod = convertRange(selectedKnob.rotation, [0.4, maxHigh], [-60, 0]).toFixed(0);
-            pixelValue.text = mod + "dB";
-            player.changeVolume(mod);
+            let mod = convertRange(selectedKnob.rotation, [0.4, maxHigh], [-60, 0]);
+            pixelValue.text = mod.toFixed(0) + "dB";
+            player.changeVolume(mod.toFixed(2));
             
         } else {
             let mod = convertRange(selectedKnob.rotation, [0.4, maxHigh], [0.2, 1.8]).toFixed(2);
@@ -470,14 +479,14 @@ module.exports = () => {
         selectedKnob.label.children[0].drawRect(0, 0, selectedKnob.label.width + 3, 20)
         // TODO - calculate bounds for volume function
         // changeVolume(value);
-    };
+    }
 
     function resetHand(handState) {
         handState.active = false;
         handState.tool = false;
         handState.item = null;
         handState.initPos = [];
-    };
+    }
 
     return {
         initPositions: () => {
