@@ -254,7 +254,7 @@ module.exports = () => {
 
         // TODO - Isolate what only needs to happen the first time
         let knobTicker = new PIXI.ticker.Ticker();
-        let playingState = false;
+        let playingState = true;
 
         // TODO - Async wait for sound buffer before activating buttons
         deckBtns.forEach((cur, ind) => {
@@ -379,10 +379,10 @@ module.exports = () => {
     function launchTape(tape) {
 
         // TODO - Isolate what only needs to happen the first time
+        let deckTray = new PIXI.Container();
         let deckInsertClosed = new PIXI.Sprite(mainjs.loadFromSheet["tapeinsert-closed.png"]);
         let deckWindow = new PIXI.Graphics();
         let tapeSprite = new PIXI.Sprite();
-        let playingState = false;
 
         tapeSprite.texture = tape.item.sprite.texture;
         tapeSprite.anchor.set(0.5);
@@ -422,7 +422,6 @@ module.exports = () => {
         player = audioEngine(tape.item.sounds);
         mainjs.sounds.insert.play();
         player.switchLoop(0);
-        playingState = true;
     
         // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes
