@@ -8,10 +8,6 @@ A web-based app to do horrible things to pixelated cassette tapes, all in the na
 
 
 
-![Screenshot1](./img/Screenshot1.jpeg)
-
-
-
 ## Built With
 
 * [Pixi.js](http://www.pixijs.com/) - 2D Graphics Library
@@ -30,3 +26,12 @@ This is currently being built as a portfolio project, but any help would be grea
 ## Authors
 
 * [**mwassen**](https://github.com/mwassen) - Sound, design & code
+
+
+
+## Screenshots
+
+![Screenshot1](./img/Screenshot1.jpeg)
+
+*Tapes Loaded*
+
