@@ -76,9 +76,7 @@ function setup() {
 	// Load elements
 	const tableBg = table();
 	const interface = userI();
-	// tableState.tapes = tapeFactory();
 	tableState.decks.push(playerFactory());
-	// const hammer = toolFactory("hammer");
 
 
 	// Initialise elements
@@ -87,8 +85,6 @@ function setup() {
 	interface.init(tableState.size);
 	tableState.decks[0].initPositions();
 	tableState.decks[0].init(tableState.size);
-	// hammer.init();
-	// tableState.tapes.init();
 
 	// Load the play state into gameLoop
 	state = play;

@@ -28,12 +28,18 @@ module.exports = () => {
         let tableTexture = new PIXI.Container();
         const tableW = window.innerWidth - 200;
         const tableH = window.innerHeight - 200;
+        let lastIter = null;
+        let iterNr = 7;
 
         // Places planks over height and width
         for (let i = 0; i < tableH; i += 64) {
 
             // Randomises plank x positions
-            let iter = Math.ceil(Math.random() * 7);
+            let iter = Math.ceil(Math.random() * iterNr);
+            while (iter == lastIter) {
+                iter = Math.ceil(Math.random() * iterNr);
+            };
+            lastIter = iter;
 
             for (let j = 0; j < tableW + 400; j += 256) {       
                 
@@ -81,13 +87,46 @@ module.exports = () => {
             let tableShadow = new PIXI.Graphics();
             tableShadow.beginFill(0x000000);
             tableShadow.alpha = 0.15;
-            tableShadow.drawRoundedRect(-15 - (i * 15), -15 - (i * 15), table.width + (i * 15), table.height + (i * 15));
+            let iterator = 10;
+            tableShadow.drawRoundedRect(-15 - (i * iterator), -15 - (i * iterator), table.width + (i * iterator), table.height + (i * iterator));
             table.addChildAt(tableShadow, 0);
         }
         
     
         mainjs.app.stage.addChild(table);
     };
+
+    // function setupPositions() {
+    //     // TODO - Loop over W & H to halve this function
+    //     // Retreives loaded table size
+    //     let tWidth = mainjs.tState.size[0];
+    //     let tHeight = mainjs.tState.size[1];
+    
+    //     // Checks how many cells of min 300px are available
+    //     let xAmount = Math.floor(tWidth / 300);
+    //     let yAmount = Math.floor(tHeight / 300);
+    
+    //     // Assigns cell size based on table size
+    //     let boxX = tWidth / xAmount;
+    //     let boxY = tHeight / yAmount;
+    
+    //     // Calculates distance between window and table
+    //     // TODO - Maybe table should be a container?
+    //     let tableDiffx = (window.innerWidth - tWidth) / 2;
+    //     let tableDiffy = (window.innerHeight - tHeight) / 2;
+    
+    //     let output = [];
+    
+    //     // Loops over available cells + adds the center point of each cell to output
+    //     for (let y = 0; y < yAmount; y++) {
+    //         for (let x = 0; x < xAmount; x++) {
+    //             let xPos = (x * boxX) + (boxX / 2) + tableDiffx;
+    //             let yPos = (y * boxY) + (boxY / 2) + tableDiffy;
+    //             output.push([xPos, yPos]);
+    //         }
+    //     }
+    //     positions = output;
+    // };
 
 
     return {
