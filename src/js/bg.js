@@ -3,25 +3,6 @@ const mainjs = require("./main.js");
 
 module.exports = () => {
     tableSize = [];
-    
-    // Creates a floor background
-    function floorSetup() {
-        const floorW = window.innerWidth + 256;
-        const floorH = window.innerHeight + 256;
-        const floorCont = new PIXI.Container();
-
-        // Loops over height and width, placing tiles
-        for (let i = -256; i < floorH; i += 256) {
-            for (let j = -256; j < floorW; j += 256) {
-
-                let floorTile = new PIXI.Sprite(mainjs.loadFromSheet["floortiles-1.png"]);
-                floorTile.position.set(j, i);
-                floorCont.addChild(floorTile);
-            }
-        }
-
-        mainjs.app.stage.addChild(floorCont);
-    };
 
     function setup() {
         const table = new PIXI.Container();
@@ -131,7 +112,6 @@ module.exports = () => {
 
     return {
         init: () => {
-            floorSetup();
             setup(); 
         },
 

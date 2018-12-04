@@ -53,7 +53,7 @@ let app = new Application({
 	width: window.innerWidth,
 	height: window.innerHeight,
 	antialiasing: false,
-	transparent: false,
+	transparent: true,
 	resolution: 1
 });
 
