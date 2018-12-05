@@ -62,12 +62,13 @@ module.exports = () => {
 
         // Sets current width and height for use in other functions
         tableSize = [table.width, table.height];
+        mainjs.mainState.table.size = [table.width, table.height];
 
         // Creates a series of concentric shadows around the table
         for (let i = 1; i < 5; i++) {
             let tableShadow = new PIXI.Graphics();
             tableShadow.beginFill(0x000000);
-            tableShadow.alpha = 0.15;
+            tableShadow.alpha = 0.12;
             let iterator = 10;
             tableShadow.drawRoundedRect(-15 - (i * iterator), -15 - (i * iterator), table.width + (i * iterator), table.height + (i * iterator));
             table.addChildAt(tableShadow, 0);
@@ -77,44 +78,44 @@ module.exports = () => {
         mainjs.app.stage.addChild(table);
     };
 
-    // function setupPositions() {
-    //     // TODO - Loop over W & H to halve this function
-    //     // Retreives loaded table size
-    //     let tWidth = mainjs.tState.size[0];
-    //     let tHeight = mainjs.tState.size[1];
+    function setupPositions() {
+        // TODO - Loop over W & H to halve this function
+        // Retreives loaded table size
+        let tWidth = mainjs.mainState.table.size[0];
+        let tHeight = mainjs.mainState.table.size[1];
     
-    //     // Checks how many cells of min 300px are available
-    //     let xAmount = Math.floor(tWidth / 300);
-    //     let yAmount = Math.floor(tHeight / 300);
+        // Checks how many cells of min 300px are available
+        let xAmount = Math.floor(tWidth / 300);
+        let yAmount = Math.floor(tHeight / 300);
     
-    //     // Assigns cell size based on table size
-    //     let boxX = tWidth / xAmount;
-    //     let boxY = tHeight / yAmount;
+        // Assigns cell size based on table size
+        let boxX = tWidth / xAmount;
+        let boxY = tHeight / yAmount;
     
-    //     // Calculates distance between window and table
-    //     // TODO - Maybe table should be a container?
-    //     let tableDiffx = (window.innerWidth - tWidth) / 2;
-    //     let tableDiffy = (window.innerHeight - tHeight) / 2;
+        // Calculates distance between window and table
+        // TODO - Maybe table should be a container?
+        let tableDiffx = (window.innerWidth - tWidth) / 2;
+        let tableDiffy = (window.innerHeight - tHeight) / 2;
     
-    //     let output = [];
+        let output = [];
     
-    //     // Loops over available cells + adds the center point of each cell to output
-    //     for (let y = 0; y < yAmount; y++) {
-    //         for (let x = 0; x < xAmount; x++) {
-    //             let xPos = (x * boxX) + (boxX / 2) + tableDiffx;
-    //             let yPos = (y * boxY) + (boxY / 2) + tableDiffy;
-    //             output.push([xPos, yPos]);
-    //         }
-    //     }
-    //     positions = output;
-    // };
+        // Loops over available cells + adds the center point of each cell to output
+        for (let y = 0; y < yAmount; y++) {
+            for (let x = 0; x < xAmount; x++) {
+                let xPos = (x * boxX) + (boxX / 2) + tableDiffx;
+                let yPos = (y * boxY) + (boxY / 2) + tableDiffy;
+                output.push([xPos, yPos]);
+            }
+        }
+        mainjs.mainState.table.freePositions = output;
+    };
 
 
     return {
         init: () => {
             setup(); 
+            setupPositions();
         },
-
         // TODO: should handle state in a more cohesive manner!!
         width: () => {
             return tableSize[0];

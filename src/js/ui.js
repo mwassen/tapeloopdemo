@@ -7,7 +7,7 @@ const FontFaceObserver = require("fontfaceobserver");
 
 module.exports = () => {
     let font = new FontFaceObserver('Press Start 2P');
-    let tableSize = [];
+    let tableSize = mainjs.mainState.table.size;
 
     // Button data
     // Todo: make this into a factory function??
@@ -48,7 +48,7 @@ module.exports = () => {
 
                 // Define unique events for each item
                 addDeck.mousedown = () => {
-                    let deckArr = mainjs.tState.decks;
+                    let deckArr = mainjs.mainState.decks.placed;
 
                     addDeck.style.fill = "blue";
                     // TODO add container that stores tapes behind the UI
@@ -56,8 +56,9 @@ module.exports = () => {
                     // Creates new player instance
                     let newDeck = playerFactory();
 
+
                     // Checks if there's enough space on the table for new deck
-                    if (!newDeck.availPos()) {
+                    if (mainjs.mainState.table.freePositions < 1) {
                         // TODO - change console logging here to actual alerts
                         console.log("no space on table");
                         return;
@@ -69,7 +70,7 @@ module.exports = () => {
                 };
 
                 removeDeck.mousedown = () => {
-                    let deckArr = mainjs.tState.decks;
+                    let deckArr = mainjs.mainState.decks.placed;
                     removeDeck.style.fill = "blue";
 
                     // Checks if there's still more than one deck left on the table
@@ -290,8 +291,7 @@ module.exports = () => {
     };
     
     return {
-        init: (size) => {
-            tableSize = size;
+        init: () => {
             setup();
         }
     }

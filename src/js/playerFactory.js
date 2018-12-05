@@ -2,48 +2,6 @@ const PIXI = require("pixi.js");
 const mainjs = require("./main");
 const audioEngine = require("./audioEngine");
 
-// TODO - These globals should be moved to the main.js file
-let positions = [];
-let lastPos = [];
-let allDecksContainer;
-let playerArr = [];
-
-
-// TODO - Look for repeating patterns and make into functions
-// TODO - Maybe get this function into the bg file
-function setupPositions() {
-    // TODO - Loop over W & H to halve this function
-    // Retreives loaded table size
-    let tWidth = mainjs.tState.size[0];
-    let tHeight = mainjs.tState.size[1];
-
-    // Checks how many cells of min 300px are available
-    let xAmount = Math.floor(tWidth / 300);
-    let yAmount = Math.floor(tHeight / 300);
-
-    // Assigns cell size based on table size
-    let boxX = tWidth / xAmount;
-    let boxY = tHeight / yAmount;
-
-    // Calculates distance between window and table
-    // TODO - Maybe table should be a container?
-    let tableDiffx = (window.innerWidth - tWidth) / 2;
-    let tableDiffy = (window.innerHeight - tHeight) / 2;
-
-    let output = [];
-
-    // Loops over available cells + adds the center point of each cell to output
-    for (let y = 0; y < yAmount; y++) {
-        for (let x = 0; x < xAmount; x++) {
-            let xPos = (x * boxX) + (boxX / 2) + tableDiffx;
-            let yPos = (y * boxY) + (boxY / 2) + tableDiffy;
-            output.push([xPos, yPos]);
-        }
-    }
-    positions = output;
-}
-
-
 module.exports = () => {
     // Todo Avoid using globals for some of these...
     let player = null;
@@ -60,10 +18,11 @@ module.exports = () => {
     function deckInit() {
 
         // Initialises container to arrange all players on same z level
-        allDecksContainer = new PIXI.Container();
+        mainjs.mainState.decks.container = new PIXI.Container();
+
 
         // TODO - avoid or attempt to lessen use of side-effects in places such as this
-        mainjs.app.stage.addChild(allDecksContainer);
+        mainjs.app.stage.addChild(mainjs.mainState.decks.container);
     }
 
     function addPlayer() {
@@ -215,7 +174,7 @@ module.exports = () => {
         singleDeckContainer.rotation = (Math.random() - 0.5) * 0.15;
 
         // Load preset position from array
-        let defPos = positions.splice(0, 1)[0];
+        let defPos = mainjs.mainState.table.freePositions.splice(0, 1)[0];
 
         // Add some small random variance in the deck positions
         let deckPos = defPos.map(cur => {
@@ -223,7 +182,7 @@ module.exports = () => {
         });
 
         // Save preset position for reuse if deleted & set position
-        lastPos.push(defPos);
+        mainjs.mainState.table.usedPositions.push(defPos);
         singleDeckContainer.position.set(...deckPos);
         
 
@@ -231,31 +190,31 @@ module.exports = () => {
         // Adds CURSOR EVENTS to decks
         singleDeckContainer.interactive = true;
         singleDeckContainer.mouseover = () => {
-            if(mainjs.hand.active) {
+            if(mainjs.mainState.hand.active) {
                 singleDeckContainer.buttonMode = true;
                 playerBg.visible = true;
             }
         }
 
         singleDeckContainer.mouseout = () => {
-            if(mainjs.hand.active) {
+            if(mainjs.mainState.hand.active) {
                 singleDeckContainer.buttonMode = false;
                 playerBg.visible = false;
             }
         }
 
         singleDeckContainer.mousedown = () => {
-            if(mainjs.hand.active) {
+            if(mainjs.mainState.hand.active) {
                 singleDeckContainer.buttonMode = false;
                 playerBg.visible = false;
-                if(mainjs.hand.tool) {
-                    initEffect(mainjs.hand);
+                if(mainjs.mainState.hand.tool) {
+                    initEffect(mainjs.mainState.hand);
                 } else {
                     if(active) {
-                        launchTape(mainjs.hand);
+                        launchTape(mainjs.mainState.hand);
                     } else {
                         initControls();
-                        launchTape(mainjs.hand);
+                        launchTape(mainjs.mainState.hand);
                         active = true;
                     }
                     
@@ -264,8 +223,8 @@ module.exports = () => {
         };
 
         // Add to decks array and container
-        playerArr.push(singleDeckContainer);
-        allDecksContainer.addChild(singleDeckContainer);
+        mainjs.mainState.decks.placed.push(singleDeckContainer);
+        mainjs.mainState.decks.container.addChild(singleDeckContainer);
     }
 
     function removePlayer() {
@@ -275,9 +234,10 @@ module.exports = () => {
         }
 
         // Remove sprite from decks array and container
-        let lastPlayer = playerArr.splice(playerArr.length - 1, 1);
-        allDecksContainer.removeChild(lastPlayer[0]);
-        positions.unshift(...lastPos.splice(lastPos.length - 1, 1));
+        let lastPlayer = mainjs.mainState.decks.placed.splice(mainjs.mainState.decks.placed.length - 1, 1);
+        let lastPos = mainjs.mainState.table.usedPositions;
+        mainjs.mainState.decks.container.removeChild(lastPlayer[0]);
+        mainjs.mainState.table.freePositions.unshift(...lastPos.splice(lastPos.length - 1, 1));
     }
 
     function initControls() {
@@ -466,7 +426,7 @@ module.exports = () => {
     
         // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes
-        resetHand(mainjs.hand);
+        resetHand(mainjs.mainState.hand);
     }
 
     // let curPos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
@@ -538,9 +498,9 @@ module.exports = () => {
     }
 
     return {
-        initPositions: () => {
-            setupPositions();
-        },
+        // initPositions: () => {
+        //     setupPositions();
+        // },
         init: () => {
             deckInit();
             addPlayer();
@@ -551,8 +511,8 @@ module.exports = () => {
         delPlayer: () => {
             return removePlayer();
         },
-        availPos: () => {
-            return positions.length < 1 ? false : true;
-        }
+        // availPos: () => {
+        //     return positions.length < 1 ? false : true;
+        // }
     }
 }

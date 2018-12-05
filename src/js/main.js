@@ -2,8 +2,6 @@
 /* global require */
 const PIXI = require("pixi.js");
 const {Howl, Howler} = require("howler");
-// const tapeFactory = require("./tapeFactory");
-// const toolFactory = require("./toolFactory");
 const playerFactory = require("./playerFactory");
 const table = require("./bg");
 const userI = require("./ui");
@@ -18,13 +16,22 @@ let Application = PIXI.Application,
 	// Sprite = PIXI.Sprite,
 	// Text = PIXI.Text,
 	// TextStyle = PIXI.TextStyle;
-	
-// Global Variables
-let hand = {
-	active: false,
-	tool: false,
-	item: null,
-	initPos: []
+
+// Stores global state details - targetted by side-effects throughout
+let mainState = {
+	decks: {
+		container: null,
+		placed: []
+	},
+	hand: {
+		active: false,
+		item: null
+	},
+	table: {
+		freePositions: [],
+		usedPositions: [],
+		size: []
+	}
 };
 
 let soundFx = {
@@ -39,12 +46,6 @@ let soundFx = {
 		volume: 0.15
 	})
 }
-
-let tableState = {
-	size: null,
-	decks: [],
-	tapes: null
-};
 
 let state;
 
@@ -70,21 +71,18 @@ document.body.appendChild(app.view);
 
 function setup() {
 	// Define and export reference to sprite sheet
-	const loadFromSheet = loader.resources["./src/assets/sprites/sheetv1.json"].textures;
-	exports.loadFromSheet = loadFromSheet;
+	exports.loadFromSheet = loader.resources["./src/assets/sprites/sheetv1.json"].textures;
 
 	// Load elements
 	const tableBg = table();
-	const interface = userI();
-	tableState.decks.push(playerFactory());
+	tableBg.init();
 
+	const interface = userI();
+	mainState.decks.placed.push(playerFactory());
 
 	// Initialise elements
-	tableBg.init();
-	tableState.size = [tableBg.width(), tableBg.height()];
-	interface.init(tableState.size);
-	tableState.decks[0].initPositions();
-	tableState.decks[0].init(tableState.size);
+	interface.init();
+	mainState.decks.placed[0].init();
 
 	// Load the play state into gameLoop
 	state = play;
@@ -100,22 +98,23 @@ function gameLoop(delta) {
 function play(delta) {
 	// TODO - Needs to have cursor dissapear
 
-	if (hand.active) {
+	if (mainState.hand.active) {
 		let mPosX = app.renderer.plugins.interaction.mouse.global.x,
 			mPosY = app.renderer.plugins.interaction.mouse.global.y;
-		if(hand.tool) {
-			hand.item.interactive = false;
-			hand.item.position.set(mPosX - (hand.item.width / 2), mPosY - ((hand.item.height / 2)));
-		} else {
-			hand.item.sprite.interactive = false;
-			hand.item.sprite.position.set(mPosX - (hand.item.sprite.width / 2), mPosY - ((hand.item.sprite.height / 2)));
-		}
+
+		mainState.hand.item.sprite.interactive = false;
+		mainState.hand.item.sprite.position.set(mPosX - (mainState.hand.item.sprite.width / 2), mPosY - ((mainState.hand.item.sprite.height / 2)));
+		
+		// if(hand.tool) {
+		// 	mainState.hand.item.interactive = false;
+		// 	mainState.hand.item.position.set(mPosX - (hand.item.width / 2), mPosY - ((hand.item.height / 2)));
+		// } else {
+			
+		// }
 	}
 }
 
 // Exports to modules
-exports.hand = hand;
 exports.app = app;
-exports.tState = tableState;
 exports.sounds = soundFx;
-// exports.mainLoader = loader;
+exports.mainState = mainState;
