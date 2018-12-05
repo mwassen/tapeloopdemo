@@ -474,6 +474,7 @@ module.exports = () => {
             }
         }
 
+        // Change label text and volume/speed based on rotation
         if (selectedKnob.identity == "Volume") {
             let mod = convertRange(selectedKnob.rotation, [0.4, maxHigh], [-60, 0]);
             pixelValue.text = mod.toFixed(0) + "dB";
