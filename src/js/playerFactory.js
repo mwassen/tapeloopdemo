@@ -1,4 +1,6 @@
 const PIXI = require("pixi.js");
+const PIXIfilters = require("pixi-filters");
+const SimplexNoise = require("simplex-noise");
 const mainjs = require("./main");
 const audioEngine = require("./audioEngine");
 
@@ -71,7 +73,7 @@ module.exports = () => {
                         break;
                     // Active
                     case 1:
-                        fill = 0xD3D3D3;
+                        fill = "0xD3D3D3";
                         show = false;
                         break;
                     // Hover
@@ -169,6 +171,10 @@ module.exports = () => {
         singleDeckContainer.addChild(deckInsert);
 
 
+        // Add Gash (TEST)
+        // singleDeckContainer.addChild(gashDrawer(-20, -100, 50, -50));
+
+
         // DECK POSITIONING
         // Randomise deck rotations
         singleDeckContainer.rotation = (Math.random() - 0.5) * 0.15;
@@ -191,8 +197,10 @@ module.exports = () => {
         singleDeckContainer.interactive = true;
         singleDeckContainer.mouseover = () => {
             if(mainjs.mainState.hand.active) {
-                singleDeckContainer.buttonMode = true;
-                playerBg.visible = true;
+                if((mainjs.mainState.hand.tool && active) || !mainjs.mainState.hand.tool) {
+                    singleDeckContainer.buttonMode = true;
+                    playerBg.visible = true;
+                }
             }
         }
 
@@ -207,8 +215,9 @@ module.exports = () => {
             if(mainjs.mainState.hand.active) {
                 singleDeckContainer.buttonMode = false;
                 playerBg.visible = false;
+
                 if(mainjs.mainState.hand.tool) {
-                    initEffect(mainjs.mainState.hand);
+                    if (active) mainjs.mainState.hand.data(player);
                 } else {
                     if(active) {
                         launchTape(mainjs.mainState.hand);
@@ -221,6 +230,8 @@ module.exports = () => {
                 }
             }
         };
+
+        // singleDeckContainer.filters = [new PIXIfilters.PixelateFilter(1.5)];
 
         // Add to decks array and container
         mainjs.mainState.decks.placed.push(singleDeckContainer);
@@ -386,7 +397,7 @@ module.exports = () => {
         let tapeSprite = new PIXI.Sprite();
 
         // Load tape sprite in hand and position
-        tapeSprite.texture = tape.item.sprite.texture;
+        tapeSprite.texture = tape.cont.children[0].texture;
         tapeSprite.anchor.set(0.5);
         tapeSprite.scale.set(0.25);
         tapeSprite.position.set(0, 52);
@@ -412,7 +423,7 @@ module.exports = () => {
         singleDeckContainer.addChild(deckTray);
         
         // Hide tape sprite in hand
-        tape.item.sprite.visible = false;
+        // tape.item.sprite.visible = false;
 
         // If already playing, stop
         if (player) {
@@ -420,12 +431,13 @@ module.exports = () => {
         }
         
         // Load new instance of audioengine and play
-        player.loadTape(tape.item.sounds);
+        player.loadTape(tape.data);
         mainjs.sounds.insert.play();
         player.switchLoop(0);
     
         // Resets hand so tape is no longer linked to cursor
         // TODO - maybe need a global variable that stores currently active tapedecks + tapes
+
         resetHand(mainjs.mainState.hand);
     }
 
@@ -492,16 +504,48 @@ module.exports = () => {
 
     // Reset main hand
     function resetHand(handState) {
+        handState.cont.removeChildren(0);
         handState.active = false;
-        handState.tool = false;
         handState.item = null;
-        handState.initPos = [];
     }
 
+    function gashDrawer(x1, y1, x2, y2) {
+        let m = (y2 - y1) / (x2 - x1);
+        let b = -(x1 * m - y1);
+        let vecLength = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+
+        let iterations = Math.floor(vecLength);
+        let iterB = (x2 - x1) / iterations;
+
+        let simplex = new SimplexNoise();
+
+        // let halfWay = (x1 > x2) ? x1 + Math.abs(x1 - x2) / 2 : x1 + Math.abs(x2 - x1) / 2;
+        let halfWay = x1 + Math.abs(x1 - x2) / 2
+
+        let gashCont = new PIXI.Graphics();
+        gashCont.beginFill("black");
+
+        for (let i = x1; i <= x2; i += iterB) {
+            
+            let y = m * i + b;
+
+            let simplexCur = simplex.noise2D(i, y) * 20;
+
+            let thickness = 8 - ((Math.abs(halfWay - i)) / 5)
+
+
+            gashCont.drawRect(i + simplexCur, y + simplexCur, thickness, thickness)
+        }
+
+        // gashCont.filters = [new PIXIfilters.EmbossFilter()]
+
+        return gashCont;
+
+    }
+
+
+
     return {
-        // initPositions: () => {
-        //     setupPositions();
-        // },
         init: () => {
             deckInit();
             addPlayer();
@@ -511,9 +555,6 @@ module.exports = () => {
         },
         delPlayer: () => {
             return removePlayer();
-        },
-        // availPos: () => {
-        //     return positions.length < 1 ? false : true;
-        // }
+        }
     }
 }

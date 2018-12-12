@@ -1,7 +1,9 @@
 const PIXI = require("pixi.js");
+const PIXIfilters = require("pixi-filters");
 const mainjs = require("./main");
 const playerFactory = require("./playerFactory");
 const tapeFactory = require("./tapeFactory");
+const toolFactory = require("./toolFactory");
 const FontFaceObserver = require("fontfaceobserver");
 
 
@@ -155,6 +157,7 @@ module.exports = () => {
                     };
 
                     tapeBtn.mousedown = () => {
+                        clearHand();
                         tapeFact.addToHand(cur);
                     };
 
@@ -167,18 +170,82 @@ module.exports = () => {
                 return [fullContainer];
             }
         },
-        // {   
-        //     text: "tools",
-        //     pos: [300, 35],
-        //     menu: null,
-        //     menuSize: [200, 500],
-        //     hover: null,
-        //     sprite: null,
-        //     // Select tools
-        //     populate: () => {
-        //         return [];
-        //     } 
-        // }
+        {   
+            text: "tools",
+            pos: [],
+            menu: null,
+            menuSize: [115, 200],
+            hover: null,
+            sprite: null,
+            // Select tools
+            populate: () => {
+                let toolFact = toolFactory();
+
+                let toolArr = toolFact.initMenu();
+
+                let fullContainer = new PIXI.Container();
+                
+                toolArr.forEach((cur, ind) => {
+                    let sprite = cur.sprite;
+                    let spriteBg = new PIXI.Sprite();
+                    let spriteCol = new PIXI.Container();
+                    let name = new PIXI.Text(cur.name, {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"});
+                    let toolBtn = new PIXI.Container();
+
+                    spriteBg.texture = sprite.texture;
+                    // Size tool
+                    sprite.anchor.set(0.5);
+                    spriteBg.anchor.set(0.5);
+
+                    spriteBg.filters = [new PIXIfilters.OutlineFilter(2, 0xe25822)]
+                    spriteBg.visible = false;
+
+
+
+                    spriteCol.addChild(spriteBg);
+                    spriteCol.addChild(sprite);
+
+                    spriteCol.scale.set(0.5);
+                    spriteCol.position.set(spriteCol.width / 2, spriteCol.height / 2);
+
+                    
+
+                    // Place text
+                    name.anchor.set(0.5)
+                    name.position.set(sprite.width, spriteCol.height / 2);
+
+                    toolBtn.addChild(spriteCol);
+                    toolBtn.addChild(name);
+
+                    toolBtn.interactive = true;
+                    toolBtn.buttonMode = true;
+                    toolBtn.hitArea = new PIXI.Rectangle(0, 0, toolBtn.width, toolBtn.height);
+
+                    toolBtn.mouseover = () => {
+                        spriteBg.visible = true;
+                        name.style.fill = 0xe25822;
+                    };
+
+                    toolBtn.mouseout = () => {
+                        spriteBg.visible = false;
+                        name.style.fill = "white";
+                    };
+
+                    toolBtn.mousedown = () => {
+                        clearHand();
+                        toolFact.addToHand(cur);
+                    };
+
+
+                    fullContainer.addChild(toolBtn)
+
+                });
+
+                fullContainer.position.set(10, 20);
+
+                return [fullContainer];
+            } 
+        }
     ];
 
     function createBtns(btn, ind) {
@@ -202,6 +269,9 @@ module.exports = () => {
         textSprite.mouseover = () => {
             btn.menu.visible = true;
             textSprite.style.fill = 0xe25822;
+            if (mainjs.mainState.hand.active) {
+                clearHand();
+            }
         }
         textSprite.mouseout = () => {
             // hover state changes when cursor moves down to menu
@@ -215,26 +285,33 @@ module.exports = () => {
         btn.sprite = textSprite;
 
         // Add text sprite to stage
-        mainjs.app.stage.addChild(textSprite);
+        // mainjs.app.stage.addChild(textSprite);
+        return textSprite;
     };
 
     function setup() {
         // Ensures font is loaded before rendering elements
+        let buttonCont = new PIXI.Container()
         font.load().then(function () {
+            
             buttons.forEach((btn, ind) => {
-                createBtns(btn, ind);
+                buttonCont.addChild(createBtns(btn, ind));
             })
+            mainjs.app.stage.addChild(buttonCont);
             setupMenus();
             initMenu();
+            mainjs.app.stage.addChild(mainjs.mainState.hand.cont);
         }, function () {
             // Logs issue but continues with default font
             console.log('Font is not available');
             buttons.forEach((btn, ind) => {
-                createBtns(btn, ind);
+                buttonCont.addChild(createBtns(btn, ind));
             })
+            mainjs.app.stage.addChild(buttonCont);
             setupMenus();
             initMenu();
-        });        
+            mainjs.app.stage.addChild(mainjs.mainState.hand.cont);
+        });
     }
 
     // Menus
@@ -277,6 +354,15 @@ module.exports = () => {
         btn.menu = curMenu;
     }
 
+    function clearHand() {
+        if (mainjs.mainState.hand.active) {
+            mainjs.mainState.hand.tool = false;
+            mainjs.mainState.hand.cont.removeChildren(0);
+            mainjs.mainState.hand.active = false;
+            mainjs.mainState.hand.item = null;
+        }
+    }
+
     // Why is this a seperate function?
     function setupMenus() {
         buttons.forEach((cur) => {
@@ -285,9 +371,11 @@ module.exports = () => {
     }
 
     function initMenu() {
+        let menuCont = new PIXI.Container();
         buttons.forEach((cur) => {
-            mainjs.app.stage.addChild(cur.menu);
+            menuCont.addChild(cur.menu);
         })
+        mainjs.app.stage.addChild(menuCont);
     };
     
     return {

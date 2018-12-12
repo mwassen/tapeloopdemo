@@ -25,7 +25,10 @@ let mainState = {
 	},
 	hand: {
 		active: false,
-		item: null
+		cont: new PIXI.Container(),
+		item: null,
+		data: null,
+		tool: false
 	},
 	table: {
 		freePositions: [],
@@ -86,6 +89,7 @@ function setup() {
 
 	// Load the play state into gameLoop
 	state = play;
+	
 
 	// Start the game loop
 	app.ticker.add(delta => gameLoop(delta));
@@ -101,9 +105,13 @@ function play(delta) {
 	if (mainState.hand.active) {
 		let mPosX = app.renderer.plugins.interaction.mouse.global.x,
 			mPosY = app.renderer.plugins.interaction.mouse.global.y;
+		
+		mainState.hand.cont.position.set(mPosX - (mainState.hand.cont.width / 2), mPosY - ((mainState.hand.cont.height / 2)));
 
-		mainState.hand.item.sprite.interactive = false;
-		mainState.hand.item.sprite.position.set(mPosX - (mainState.hand.item.sprite.width / 2), mPosY - ((mainState.hand.item.sprite.height / 2)));
+		// This is stupid
+		// mainState.hand.item.sprite.interactive = false;
+
+		// mainState.hand.item.sprite.position.set(mPosX - (mainState.hand.item.sprite.width / 2), mPosY - ((mainState.hand.item.sprite.height / 2)));
 		
 		// if(hand.tool) {
 		// 	mainState.hand.item.interactive = false;

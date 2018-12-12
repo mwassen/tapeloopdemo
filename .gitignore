@@ -2,3 +2,4 @@ bundle.js
 node_modules/
 .vscode
 .eslintrc.js
+src/js/tests.js

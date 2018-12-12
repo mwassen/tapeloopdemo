@@ -8,12 +8,20 @@ A web-based app to do horrible things to pixelated cassette tapes, all in the na
 
 
 
+## How To Run
+
+1. Run `npm install`
+2. Use [Browserify](http://browserify.org/) to bundle *./src/js/main.js* into *bundle.js*.
+
+
+
 ## Built With
 
 * [Pixi.js](http://www.pixijs.com/) - 2D graphics library
 * [Tone.js](https://tonejs.github.io/) - Interactive sound library
 * [howler.js](https://howlerjs.com/) - Secondary sound library
 * [fontfaceobserver](https://github.com/bramstein/fontfaceobserver) - Webfont loading
+* [simplex-noise.js](https://github.com/jwagner/simplex-noise.js) - Noise generation
 
 
 
@@ -38,12 +46,12 @@ This is currently being built as a portfolio project, but any help would be appr
 
 ## Browser Support
 
-Tape Loop Demo has been tested and works on the following browsers:
+Tape Loop Demo has been tested and works in the following browsers:
 
 * Chrome (desktop)
 * Firefox (desktop)
 
-Currently only designed for desktop browsers, i.e. no mobile support.
+Currently only designed for desktop browsers, *i.e.* no mobile support.
 
 
 

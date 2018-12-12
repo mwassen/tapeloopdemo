@@ -7,32 +7,48 @@ module.exports = (toolId) => {
     //         fx: "break shit"
     //     }
     // }
-    const curSprite = new PIXI.Sprite(mainjs.loadFromSheet[toolId + ".png"]);
 
-    function setup() {
-        curSprite.scale.set(0.5, 0.5);
-        curSprite.position.set(window.innerWidth / 1.8, (window.innerHeight - curSprite.height) / 2);
-        curSprite.interactive = true;
-        curSprite.alpha = 0.6;
-        curSprite.mouseover = function() {
-            this.alpha = 1;
-        };
-        curSprite.mouseout = function() {
-            this.alpha = 0.6;
-        };
-        curSprite.mousedown = function() {
-            mainjs.hand.active = true;
-            mainjs.hand.tool = true;
-            mainjs.hand.item = curSprite;
-            mainjs.hand.initPos = [curSprite.position.x, curSprite.position.y]
-            console.log(mainjs.hand);
-        };
-        mainjs.app.stage.addChild(curSprite);
+    const toolsDb = [
+        {
+            name: "hammer",
+            use: (player) => {
+                console.log(player);
+            }
+            
+        }
+    ];
+
+    function menuDraw() {
+        let toolsArr = [];
+        toolsDb.forEach((cur, ind) => {
+            toolsArr[ind] = {
+                name: cur.name,
+                sprite: new PIXI.Sprite(mainjs.loadFromSheet["menu-" + cur.name + ".png"]),
+                inHand: new PIXI.Sprite(mainjs.loadFromSheet["hand-" + cur.name + "1.png"]),
+                apply: cur.use
+            }
+        });
+        return toolsArr;
+    };
+
+    function equip(tool) {
+
+        console.log(tool);
+        tool.inHand.scale.set(0.75);
+
+        mainjs.mainState.hand.cont.addChild(tool.inHand);
+
+        mainjs.mainState.hand.tool = true;
+        mainjs.mainState.hand.active = true;
+        mainjs.mainState.hand.data = tool.apply;
     };
 
     return {
-        init: () => {
-            setup();
+        initMenu: () => {
+            return menuDraw();
+        },
+        addToHand: (tool) => {
+            equip(tool);
         }
 
     }

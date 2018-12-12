@@ -2,8 +2,6 @@ const PIXI = require("pixi.js");
 const mainjs = require("./main.js");
 
 module.exports = () => {
-    tableSize = [];
-
     function setup() {
         const table = new PIXI.Container();
         let tableTexture = new PIXI.Container();
@@ -61,7 +59,6 @@ module.exports = () => {
         table.addChildAt(tableBorder, 0);
 
         // Sets current width and height for use in other functions
-        tableSize = [table.width, table.height];
         mainjs.mainState.table.size = [table.width, table.height];
 
         // Creates a series of concentric shadows around the table
@@ -115,13 +112,6 @@ module.exports = () => {
         init: () => {
             setup(); 
             setupPositions();
-        },
-        // TODO: should handle state in a more cohesive manner!!
-        width: () => {
-            return tableSize[0];
-        },
-        height: () => {
-            return tableSize[1];
         }
     }
 }

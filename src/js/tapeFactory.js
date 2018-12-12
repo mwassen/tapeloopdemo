@@ -32,16 +32,14 @@ module.exports = () => {
     };
 
     function activeTape(tape) {
-        let clickedTape = {
-            sprite: new PIXI.Sprite(mainjs.loadFromSheet[tape.name + ".png"]),
-            sounds: soundArray(tape.name)
-        }
-        clickedTape.sprite.scale.set(0.25, 0.25);
+        let newSprite = new PIXI.Sprite();
+        newSprite.texture = tape.sprite.texture;
+        newSprite.scale.set(0.25, 0.25);
 
-        mainjs.app.stage.addChild(clickedTape.sprite);
+        mainjs.mainState.hand.cont.addChild(newSprite);
 
         mainjs.mainState.hand.active = true;
-        mainjs.mainState.hand.item = clickedTape;
+        mainjs.mainState.hand.data = soundArray(tape.name);
     };
 
     return {

@@ -2,7 +2,7 @@
 
 "cnsglo1.png":
 {
-	"frame": {"x":408,"y":512,"w":408,"h":256},
+	"frame": {"x":0,"y":504,"w":408,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
@@ -10,15 +10,31 @@
 },
 "conet1.png":
 {
-	"frame": {"x":0,"y":512,"w":408,"h":256},
+	"frame": {"x":0,"y":760,"w":408,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
 	"sourceSize": {"w":408,"h":256}
 },
+"hand-hammer1.png":
+{
+	"frame": {"x":408,"y":504,"w":256,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
+	"sourceSize": {"w":256,"h":256}
+},
+"menu-hammer.png":
+{
+	"frame": {"x":0,"y":0,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
 "mswsn1.png":
 {
-	"frame": {"x":504,"y":256,"w":408,"h":256},
+	"frame": {"x":408,"y":760,"w":408,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":408,"h":256},
@@ -26,7 +42,7 @@
 },
 "plank1.png":
 {
-	"frame": {"x":512,"y":128,"w":512,"h":128},
+	"frame": {"x":0,"y":128,"w":512,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":128},
@@ -34,7 +50,7 @@
 },
 "plank2.png":
 {
-	"frame": {"x":0,"y":128,"w":512,"h":128},
+	"frame": {"x":0,"y":256,"w":512,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":128},
@@ -42,7 +58,7 @@
 },
 "plank3.png":
 {
-	"frame": {"x":300,"y":0,"w":512,"h":128},
+	"frame": {"x":364,"y":0,"w":512,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":128},
@@ -50,7 +66,7 @@
 },
 "tapedeck-body.png":
 {
-	"frame": {"x":488,"y":768,"w":512,"h":860},
+	"frame": {"x":488,"y":1016,"w":512,"h":860},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":860},
@@ -58,7 +74,7 @@
 },
 "tapedeck-buttons1.png":
 {
-	"frame": {"x":240,"y":0,"w":60,"h":72},
+	"frame": {"x":184,"y":0,"w":60,"h":72},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":72},
@@ -66,7 +82,7 @@
 },
 "tapedeck-buttons2.png":
 {
-	"frame": {"x":120,"y":0,"w":60,"h":72},
+	"frame": {"x":64,"y":0,"w":60,"h":72},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":72},
@@ -74,7 +90,7 @@
 },
 "tapedeck-buttons3.png":
 {
-	"frame": {"x":0,"y":0,"w":60,"h":72},
+	"frame": {"x":124,"y":0,"w":60,"h":72},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":72},
@@ -82,7 +98,7 @@
 },
 "tapedeck-buttons4.png":
 {
-	"frame": {"x":60,"y":0,"w":60,"h":72},
+	"frame": {"x":244,"y":0,"w":60,"h":72},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":72},
@@ -90,7 +106,7 @@
 },
 "tapedeck-buttons5.png":
 {
-	"frame": {"x":180,"y":0,"w":60,"h":72},
+	"frame": {"x":304,"y":0,"w":60,"h":72},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":72},
@@ -98,7 +114,7 @@
 },
 "tapeinsert-closed.png":
 {
-	"frame": {"x":0,"y":768,"w":488,"h":260},
+	"frame": {"x":0,"y":1016,"w":488,"h":260},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":488,"h":260},
@@ -106,7 +122,7 @@
 },
 "tapeinsert-open.png":
 {
-	"frame": {"x":0,"y":256,"w":504,"h":248},
+	"frame": {"x":512,"y":256,"w":504,"h":248},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":504,"h":248},
@@ -121,8 +137,8 @@
 	"version": "1.0",
 	"image": "sheetv1.png",
 	"format": "RGBA8888",
-	"size": {"w":1024,"h":1628},
+	"size": {"w":1016,"h":1876},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:aaf745aff4d45cec30fb08c70fdf5a04:b4ffd1d376bf0a5ab2c5044779dcee14:e9351694b174a8a6ccf707a990f96bcb$"
+	"smartupdate": "$TexturePacker:SmartUpdate:60255fffe18359a44342f16023f48ac6:ed5601809df21eb554288ebd3d14943d:e9351694b174a8a6ccf707a990f96bcb$"
 }
 }
