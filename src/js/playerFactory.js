@@ -17,6 +17,10 @@ module.exports = () => {
     let selectedKnob = null;
     let updatedPos;
 
+    // Create ticker for knob control animations
+    let deckTicker = new PIXI.ticker.Ticker();
+    
+
     function deckInit() {
 
         // Initialises container to arrange all players on same z level
@@ -211,13 +215,35 @@ module.exports = () => {
             }
         }
 
+        // Boolean to alternate between mouseDown effects
+        let notDefault;
+
         singleDeckContainer.mousedown = () => {
+            // Placeholder function for easy switching
+            notDefault = false;
+            deckDown();
+            if (!notDefault) deckDown = downDefault;
+        };
+
+        let downDefault = () => {
             if(mainjs.mainState.hand.active) {
                 singleDeckContainer.buttonMode = false;
                 playerBg.visible = false;
 
                 if(mainjs.mainState.hand.tool) {
-                    if (active) mainjs.mainState.hand.data(player);
+                    if (active) {
+                        console.log(mainjs.mainState.hand.cont.children[0]);
+                        let runTool = mainjs.mainState.hand.data();
+
+                        let currentSprite = new PIXI.Sprite();
+                        currentSprite.texture = mainjs.mainState.hand.cont.children[0].texture;
+
+
+                        console.log(mainjs.mainState.hand);
+                        deckDown = runTool(singleDeckContainer, player, currentSprite);
+                        resetHand(mainjs.mainState.hand);
+                        notDefault = true;
+                    }
                 } else {
                     if(active) {
                         launchTape(mainjs.mainState.hand);
@@ -226,10 +252,12 @@ module.exports = () => {
                         launchTape(mainjs.mainState.hand);
                         active = true;
                     }
-                    
                 }
             }
-        };
+        }
+
+        let deckDown = downDefault;
+
 
         // singleDeckContainer.filters = [new PIXIfilters.PixelateFilter(1.5)];
 
@@ -252,8 +280,6 @@ module.exports = () => {
     }
 
     function initControls() {
-        // Create ticker for knob control animations
-        let knobTicker = new PIXI.ticker.Ticker();
 
         // Load instance of audioEngine
         player = audioEngine();
@@ -359,13 +385,13 @@ module.exports = () => {
                 cur.label.visible = true;
 
                 // Add to animation ticker for label and rotation
-                knobTicker.add((delta) => knobUpdate(delta));
+                deckTicker.add((delta) => knobUpdate(delta));
 
                 // Saves initial mouse position
                 mousePos = mainjs.app.renderer.plugins.interaction.mouse.global.y;
 
                 // Starts animation
-                knobTicker.start();
+                deckTicker.start();
             }
 
             cur.mouseup = () => {
@@ -374,7 +400,7 @@ module.exports = () => {
                 cur.label.visible = false;
 
                 // Stop ticker and reset mouse and active values
-                knobTicker.stop();
+                deckTicker.stop();
                 mousePos = null;
                 selectedKnob = null;
 
@@ -506,7 +532,8 @@ module.exports = () => {
     function resetHand(handState) {
         handState.cont.removeChildren(0);
         handState.active = false;
-        handState.item = null;
+        handState.tool = false;
+        handState.data = null;
     }
 
     function gashDrawer(x1, y1, x2, y2) {
@@ -542,7 +569,6 @@ module.exports = () => {
         return gashCont;
 
     }
-
 
 
     return {

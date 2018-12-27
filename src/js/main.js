@@ -47,6 +47,14 @@ let soundFx = {
 	button: new Howl({
 		src: ["./src/assets/sound/effects/tape-button.ogg"],
 		volume: 0.15
+	}),
+	swing: new Howl({
+		src: ["./src/assets/sound/effects/swing.ogg"],
+		volume: 0
+	}),
+	bang: new Howl({
+		src: ["./src/assets/sound/effects/bang.ogg"],
+		volume: 0
 	})
 }
 

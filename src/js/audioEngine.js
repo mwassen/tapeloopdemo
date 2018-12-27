@@ -29,11 +29,11 @@ module.exports = () => {
         //     Fx.rack = [];
         //     Fx.init();
         // },
-        // dist: (amount) => {
-        //     Fx.rack.push(new Tone.Distortion(amount));
-        //     console.log(Fx.rack);
-        //     Fx.init();
-        // },
+        dist: (amount) => {
+            Fx.rack.push(new Tone.Distortion(amount, "2x"));
+            // console.log(Fx.rack);
+            Fx.init();
+        },
         // verb: (amount) => {
         //     Fx.rack.push(new Tone.Freeverb(amount, (Math.random() * 3000)));
         //     console.log(Fx.rack);
@@ -61,9 +61,9 @@ module.exports = () => {
             soundEngine.stop();
         },
 
-        // addDist: () => {
-        //     Fx.dist(0.1);
-        // },
+        addDist: (nr) => {
+            Fx.dist(nr);
+        },
 
         // addRev: () => {
         //     Fx.verb(0.1);
