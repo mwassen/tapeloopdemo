@@ -1,6 +1,4 @@
 const PIXI = require("pixi.js");
-const PIXIfilters = require("pixi-filters");
-const SimplexNoise = require("simplex-noise");
 const mainjs = require("./main");
 const audioEngine = require("./audioEngine");
 
@@ -45,6 +43,13 @@ module.exports = () => {
         deckInsert.anchor.set(0.5);
         deckInsert.scale.set(0.3, 0.3);
         deckInsert.position.set(0, 45);
+
+        // Initialise deck speaker grill
+        let deckInternals = new PIXI.Sprite(mainjs.loadFromSheet["tapedeck-internals.png"])
+        deckInternals.anchor.set(0.5);
+        deckInternals.scale.set(0.3);
+        deckInternals.position.set(0, -68);
+        deckInternals.visible = false;
 
         // Create highlight bg for cursor hover
         playerBg = new PIXI.Graphics();
@@ -166,17 +171,36 @@ module.exports = () => {
         controlBtns.position.set(-75, 118);
         knobsContainer.position.set(40, 107);
 
+        // Create containers to seperate assets
+        let bodyBack = new PIXI.Container();
+        bodyBack.addChild(playerShadow);
+        bodyBack.addChild(playerBg);
+        bodyBack.addChild(deckBody);
+
+        let deckControls = new PIXI.Container();
+        deckControls.addChild(controlBtns);
+        deckControls.addChild(knobsContainer);
+
+        let deckOverlays = new PIXI.Container();
+        deckOverlays.addChild(deckInsert);
+        deckOverlays.addChild(deckInternals);
+
+        let tapeDeckCont = new PIXI.Container();
+        tapeDeckCont.addChild(bodyBack);
+        tapeDeckCont.addChild(deckControls);
+        tapeDeckCont.addChild(deckOverlays);
+
+        singleDeckContainer.addChild(tapeDeckCont);
+
+
         // Add all drawn assets in display order to deck container
-        singleDeckContainer.addChild(playerShadow);
-        singleDeckContainer.addChild(playerBg);
-        singleDeckContainer.addChild(deckBody);
-        singleDeckContainer.addChild(controlBtns);
-        singleDeckContainer.addChild(knobsContainer);
-        singleDeckContainer.addChild(deckInsert);
-
-
-        // Add Gash (TEST)
-        // singleDeckContainer.addChild(gashDrawer(-20, -100, 50, -50));
+        // singleDeckContainer.addChild(playerShadow);
+        // singleDeckContainer.addChild(playerBg);
+        // singleDeckContainer.addChild(deckBody);
+        // singleDeckContainer.addChild(controlBtns);
+        // singleDeckContainer.addChild(knobsContainer);
+        // singleDeckContainer.addChild(deckInsert);
+        // singleDeckContainer.addChild(deckInternals);
 
 
         // DECK POSITIONING
@@ -232,14 +256,11 @@ module.exports = () => {
 
                 if(mainjs.mainState.hand.tool) {
                     if (active) {
-                        console.log(mainjs.mainState.hand.cont.children[0]);
                         let runTool = mainjs.mainState.hand.data();
 
                         let currentSprite = new PIXI.Sprite();
                         currentSprite.texture = mainjs.mainState.hand.cont.children[0].texture;
 
-
-                        console.log(mainjs.mainState.hand);
                         deckDown = runTool(singleDeckContainer, player, currentSprite);
                         resetHand(mainjs.mainState.hand);
                         notDefault = true;
@@ -445,9 +466,9 @@ module.exports = () => {
         deckTray.addChild(deckInsertClosed);
 
         // Replace current tray with new one
-        singleDeckContainer.removeChild(deckInsert);
-        singleDeckContainer.addChild(deckTray);
-        
+        singleDeckContainer.children[0].children[2].removeChild(deckInsert);
+        singleDeckContainer.children[0].children[2].addChild(deckTray);
+
         // Hide tape sprite in hand
         // tape.item.sprite.visible = false;
 
@@ -534,40 +555,6 @@ module.exports = () => {
         handState.active = false;
         handState.tool = false;
         handState.data = null;
-    }
-
-    function gashDrawer(x1, y1, x2, y2) {
-        let m = (y2 - y1) / (x2 - x1);
-        let b = -(x1 * m - y1);
-        let vecLength = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
-
-        let iterations = Math.floor(vecLength);
-        let iterB = (x2 - x1) / iterations;
-
-        let simplex = new SimplexNoise();
-
-        // let halfWay = (x1 > x2) ? x1 + Math.abs(x1 - x2) / 2 : x1 + Math.abs(x2 - x1) / 2;
-        let halfWay = x1 + Math.abs(x1 - x2) / 2
-
-        let gashCont = new PIXI.Graphics();
-        gashCont.beginFill("black");
-
-        for (let i = x1; i <= x2; i += iterB) {
-            
-            let y = m * i + b;
-
-            let simplexCur = simplex.noise2D(i, y) * 20;
-
-            let thickness = 8 - ((Math.abs(halfWay - i)) / 5)
-
-
-            gashCont.drawRect(i + simplexCur, y + simplexCur, thickness, thickness)
-        }
-
-        // gashCont.filters = [new PIXIfilters.EmbossFilter()]
-
-        return gashCont;
-
     }
 
 
