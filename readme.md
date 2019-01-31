@@ -1,4 +1,4 @@
-![tape](img/tape.png)
+![tape](./src/assets/img/tape.png)
 
 
 
@@ -57,6 +57,6 @@ Currently only designed for desktop browsers, *i.e.* no mobile support.
 
 ## Screenshots
 
-![Screenshot1](./img/Screenshot1.jpeg)
+![Screenshot1](./src/assets/img/Screenshot1.jpeg)
 
 *Tapes Loaded*
