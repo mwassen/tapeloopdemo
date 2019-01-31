@@ -12,45 +12,65 @@ module.exports = (toolId) => {
     };
 
     // Function for creating gashes between two positions
-    function gashDrawer(x1, y1, x2, y2) {
-        // Define slope
-        let m = (y2 - y1) / (x2 - x1);
-        // Define offset
-        let b = -(x1 * m - y1);
-        // Define length
-        let vecLength = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+    // function gashDrawer(x1, y1, x2, y2) {
+    //     // Define slope
+    //     let m = (y2 - y1) / (x2 - x1);
+    //     // Define offset
+    //     let b = -(x1 * m - y1);
+    //     // Define length
+    //     let vecLength = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
 
-        // Calculate amount of iterations based on length
-        let iterations = Math.floor(vecLength);
-        let iterB = (x2 - x1) / iterations;
+    //     // Calculate amount of iterations based on length
+    //     let iterations = Math.floor(vecLength);
+    //     let iterB = (x2 - x1) / iterations;
 
-        let simplex = new SimplexNoise();
+    //     let simplex = new SimplexNoise();
 
-        // let halfWay = (x1 > x2) ? x1 + Math.abs(x1 - x2) / 2 : x1 + Math.abs(x2 - x1) / 2;
-        let halfWay = x1 + Math.abs(x1 - x2) / 2
+    //     // let halfWay = (x1 > x2) ? x1 + Math.abs(x1 - x2) / 2 : x1 + Math.abs(x2 - x1) / 2;
+    //     let halfWay = x1 + Math.abs(x1 - x2) / 2
 
-        let gashCont = new PIXI.Graphics();
-        gashCont.beginFill(0x000000);
+    //     let gashCont = new PIXI.Graphics();
+    //     gashCont.beginFill(0x000000);
 
-        for (let i = x1; i <= x2; i += iterB) {
+    //     for (let i = x1; i <= x2; i += iterB) {
             
-            let y = m * i + b;
+    //         let y = m * i + b;
 
-            let simplexCur = simplex.noise2D(i, y) * 20;
+    //         let simplexCur = simplex.noise2D(i, y) * 20;
 
-            let thickness = 3 - ((Math.abs(halfWay - i)) / 5)
+    //         let thickness = 3 - ((Math.abs(halfWay - i)) / 5)
 
 
-            gashCont.drawRect(i + simplexCur, y + simplexCur, thickness, thickness)
+    //         gashCont.drawRect(i + simplexCur, y + simplexCur, thickness, thickness)
+    //     }
+
+    //     // gashCont.filters = [new PIXIfilters.EmbossFilter()]
+
+    //     return gashCont;
+
+    // }
+
+    function fireDrawer() {
+        let fireSprite = new PIXI.Sprite();
+        let fireFrames = [];
+        let frame = Math.floor(Math.random() * 4);
+
+        for (let i = 0; i < 4; i++) {
+            fireFrames.push(new PIXI.Texture.from(mainjs.loadFromSheet["fire" + (i + 1) + ".png"]))
         }
 
-        // gashCont.filters = [new PIXIfilters.EmbossFilter()]
+        setInterval(() => {
+            fireSprite.texture = fireFrames[frame];
+            frame++;
+            if(frame >= 4) {
+                frame = 0;
+            }
+        }, 75);
 
-        return gashCont;
-
+        return fireSprite;
     }
 
-    // Ticker for tool animations
+    // Ticker for tool animations & flames
     let toolTicker = new PIXI.ticker.Ticker;
 
     const toolsDb = [
@@ -122,6 +142,10 @@ module.exports = (toolId) => {
 
                         // Calculate hit strength based on indicator position at click
                         let amount = convertRange(hammerMeterInd.position.y, [0, -124], [0, 1]);
+                        let damage = amount * 33;
+
+                        // Calculate HP for current player
+                        deckCont.healthPoints -= damage;
 
                         // Play swing sound at varying volume
                         mainjs.sounds.swing._volume = amount;
@@ -168,39 +192,58 @@ module.exports = (toolId) => {
                                         }, 50 * j);
                                     }
 
+                                    deckCont.children[0].children[3].removeChildren();
 
-                                    // Draws gashes onto speaker grill
-                                    let internals = deckCont.children[0].children[2].children[0];
-                                    let newGash = gashDrawer(-20, -100, 0, -70);
-                                    if(internals.parent.children.length > 2) {
-                                        internals.mask = null;
-                                        internals.parent.removeChildAt(2);
+                                    for (let i = 0; i < (100 - deckCont.healthPoints); i += 25) {
+                                        let newFire = fireDrawer();
+                                        newFire.scale.set(0.75);
+                                        newFire.anchor.set(0.5);
+                                        newFire.position.set(((Math.random() - 0.5) * (deckCont.width / 4)), ((Math.random() - 0.5) * (deckCont.height / 4)));
+    
+    
+                                        deckCont.children[0].children[3].addChild(newFire);
                                     }
 
-                                    internals.mask = newGash;
-                                    internals.parent.addChild(newGash);
-
-                                    internals.filters = [new PIXIfilters.OutlineFilter(2, 0x000000)];
-
-                                    internals.visible = true;
 
 
-                                    // Adds displacement map to deck body, simulating damage
-                                    let displaceMap = new PIXI.Sprite(mainjs.loadFromSheet["displace.png"]);
-                                    displaceMap.anchor.set(0);
-                                    displaceMap.scale.set(3, 3);
-                                    // displaceMap.rotation = Math.random()
+                                    
 
-                                    console.log(deckCont.children[0].filters)
-                                    if (deckCont.children[0].filters){
-                                        deckCont.children[0].removeChild(displaceMap);
-                                        deckCont.children[0].filters.push(new PIXI.filters.DisplacementFilter(displaceMap));
-                                        console.log("suckaaaa");
-                                    } else {
-                                        deckCont.children[0].filters = [new PIXI.filters.DisplacementFilter(displaceMap)];
-                                    }
 
-                                    mainjs.app.stage.addChild(displaceMap);
+
+
+
+                                    // // Draws gashes onto speaker grill
+                                    // let internals = deckCont.children[0].children[2].children[0];
+                                    // let newGash = gashDrawer(-20, -100, 0, -70);
+                                    // if(internals.parent.children.length > 2) {
+                                    //     internals.mask = null;
+                                    //     internals.parent.removeChildAt(2);
+                                    // }
+
+                                    // internals.mask = newGash;
+                                    // internals.parent.addChild(newGash);
+
+                                    // internals.filters = [new PIXIfilters.OutlineFilter(2, 0x000000)];
+
+                                    // internals.visible = true;
+
+
+                                    // // Adds displacement map to deck body, simulating damage
+                                    // let displaceMap = new PIXI.Sprite(mainjs.loadFromSheet["displace.png"]);
+                                    // displaceMap.anchor.set(0);
+                                    // displaceMap.scale.set(3, 3);
+                                    // // displaceMap.rotation = Math.random()
+
+                                    // console.log(deckCont.children[0].filters)
+                                    // if (deckCont.children[0].filters){
+                                    //     deckCont.children[0].removeChild(displaceMap);
+                                    //     deckCont.children[0].filters.push(new PIXI.filters.DisplacementFilter(displaceMap));
+                                    //     console.log("suckaaaa");
+                                    // } else {
+                                    //     deckCont.children[0].filters = [new PIXI.filters.DisplacementFilter(displaceMap)];
+                                    // }
+
+                                    // mainjs.app.stage.addChild(displaceMap);
                                 }
                             // Increases animation acceleration according to hit
                             }, ((30 - (i * amount * 1.5)) * i));

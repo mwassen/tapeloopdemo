@@ -287,7 +287,13 @@ module.exports = () => {
         // Add text sprite to stage
         // mainjs.app.stage.addChild(textSprite);
         return textSprite;
-    };
+    }
+
+    function recordBtn() {
+        let redBtn = new PIXI.Sprite(mainjs.loadFromSheet["recordbtn.png"]);
+
+        
+    }
 
     function setup() {
         // Ensures font is loaded before rendering elements

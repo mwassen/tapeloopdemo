@@ -15,6 +15,8 @@ module.exports = () => {
     let selectedKnob = null;
     let updatedPos;
 
+    singleDeckContainer.healthPoints = 100;
+
     // Create ticker for knob control animations
     let deckTicker = new PIXI.ticker.Ticker();
     
@@ -185,10 +187,13 @@ module.exports = () => {
         deckOverlays.addChild(deckInsert);
         deckOverlays.addChild(deckInternals);
 
+        let deckFx = new PIXI.Container();
+
         let tapeDeckCont = new PIXI.Container();
         tapeDeckCont.addChild(bodyBack);
         tapeDeckCont.addChild(deckControls);
         tapeDeckCont.addChild(deckOverlays);
+        tapeDeckCont.addChild(deckFx);
 
         singleDeckContainer.addChild(tapeDeckCont);
 

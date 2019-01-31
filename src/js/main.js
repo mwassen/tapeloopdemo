@@ -5,6 +5,7 @@ const {Howl, Howler} = require("howler");
 const playerFactory = require("./playerFactory");
 const table = require("./bg");
 const userI = require("./ui");
+const soundEngine = require("./audioenginev2");
 
 // Aliases
 let Application = PIXI.Application,
@@ -12,7 +13,7 @@ let Application = PIXI.Application,
 	loader = PIXI.loader;
 	// resources = PIXI.loader.resources,
 	// Graphics = PIXI.Graphics,
-	// TextureCache = PIXI.utils.TextureCache,
+	// TextureCaache = PIXI.utils.TextureCache,
 	// Sprite = PIXI.Sprite,
 	// Text = PIXI.Text,
 	// TextStyle = PIXI.TextStyle;
@@ -36,6 +37,8 @@ let mainState = {
 		size: []
 	}
 };
+
+let soundEngine = soundEngine();
 
 let soundFx = {
 	// Tape Cassette Insert by Fats Million - https://freesound.org/people/Fats%20Million/sounds/187788/
@@ -132,5 +135,6 @@ function play(delta) {
 
 // Exports to modules
 exports.app = app;
+exports.soundEngine = soundEngine;
 exports.sounds = soundFx;
 exports.mainState = mainState;
