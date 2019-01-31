@@ -38,7 +38,7 @@ let mainState = {
 	}
 };
 
-let soundEngine = soundEngine();
+let noise = soundEngine();
 
 let soundFx = {
 	// Tape Cassette Insert by Fats Million - https://freesound.org/people/Fats%20Million/sounds/187788/
@@ -135,6 +135,6 @@ function play(delta) {
 
 // Exports to modules
 exports.app = app;
-exports.soundEngine = soundEngine;
+exports.noise = noise;
 exports.sounds = soundFx;
 exports.mainState = mainState;

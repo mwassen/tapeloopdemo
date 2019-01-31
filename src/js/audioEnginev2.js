@@ -15,7 +15,7 @@ module.exports = () => {
 
     return {
         newPlayer: () => {
-            let curPlayer = new.TonePlayer({
+            let curPlayer = new Tone.Player({
                 loop: true,
                 autostart : true
             });
@@ -78,7 +78,7 @@ module.exports = () => {
             }
         },
         recordAudio: () => {
-            
+
         }
         
     }

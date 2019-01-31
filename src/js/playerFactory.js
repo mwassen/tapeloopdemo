@@ -308,7 +308,7 @@ module.exports = () => {
     function initControls() {
 
         // Load instance of audioEngine
-        player = audioEngine();
+        player = mainjs.noise.newPlayer();
         let playingState = true;
 
         // TODO - Async wait for sound buffer before activating buttons
