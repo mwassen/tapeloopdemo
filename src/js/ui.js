@@ -174,7 +174,7 @@ module.exports = () => {
             text: "tools",
             pos: [],
             menu: null,
-            menuSize: [115, 200],
+            menuSize: [115, 70],
             hover: null,
             sprite: null,
             // Select tools
@@ -252,7 +252,10 @@ module.exports = () => {
         let textSprite = new PIXI.Text(btn.text, {fontFamily : 'Press Start 2P', fontSize: 16, fill : "white"}); 
 
         // Calculate menu title positions based on tableSize
-        btn.pos = [((window.innerWidth - tableSize[0]) / 2) + (15 + (ind * 100)), ((window.innerHeight - tableSize[1]) / 2) / 2];
+        btn.pos = [
+            ((window.innerWidth - tableSize[0]) / 2) + (15 + (ind * 100)),
+            ((window.innerHeight - tableSize[1]) / 2) / 2
+            ];
         textSprite.position.set(...btn.pos);
 
         // Make menu titles into buttons
@@ -290,9 +293,100 @@ module.exports = () => {
     }
 
     function recordBtn() {
+        let recordCont = new PIXI.Container();
         let redBtn = new PIXI.Sprite(mainjs.loadFromSheet["recordbtn.png"]);
+        let redBg = new PIXI.Sprite();
+        let recordingText = new PIXI.Text("recording", {fontFamily : 'Press Start 2P', fontSize: 8, fill : "white"}); 
+
+        redBg.texture = redBtn.texture
+        redBg.filters = [new PIXIfilters.OutlineFilter(3, 0xe25822)];
+        redBg.visible = false;
 
         
+
+        recordCont.addChild(redBg);
+        recordCont.addChild(redBtn);
+        recordCont.addChild(recordingText);
+
+        recordingText.position.set(-80, 8);
+        recordingText.visible = false;
+        
+
+        // Position at upper right of screen
+        let btnPos = [
+            (window.innerWidth - (window.innerWidth - tableSize[0]) / 2) - 50,
+            ((window.innerHeight - tableSize[1]) / 2) / 2
+        ];
+        recordCont.position.set(...btnPos);
+
+
+        redBtn.scale.set(0.3);
+        redBg.scale.set(0.3);
+        
+
+        // Declare as button
+        redBtn.interactive = true;
+        redBtn.buttonMode = true;
+
+        let recording = false;
+        let blinker;
+
+        // Cursor events
+        redBtn.mouseover = () => {
+            redBg.visible = true;
+        }
+        redBtn.mouseout = () =>{
+            redBg.visible = false;
+        }
+        redBtn.mousedown = () => {
+            
+            if (recording) {
+                mainjs.noise.stopRecord();
+                recording = false;
+                clearInterval(blinker);
+                redBtn.alpha = 1;
+                recordingText.visible = false;
+            } else {
+                mainjs.noise.startRecord();
+                recording = true;
+                recordingText.visible = true;
+                blinker = setInterval(() => {
+                    if(redBtn.alpha){
+                        redBtn.alpha = 0;
+                    } else {
+                        redBtn.alpha = 1;
+                    }
+                    
+                }, 500);
+            }
+            // redBg.visible = false;
+        }
+
+        
+
+        recordCont.addChild(redBtn);
+
+        return recordCont;
+    }
+
+    function setupLogo() {
+        let logoCont = new PIXI.Container();
+        let firstRow = new PIXI.Text("tape", {fontFamily : 'Press Start 2P', fontSize: 20, fill : "white"});
+        let secondRow = new PIXI.Text("fumes", {fontFamily : 'Press Start 2P', fontSize: 20, fill : "white"});
+
+
+        firstRow.position.set(5, 0);
+        secondRow.position.set(0, 20);
+
+        logoCont.addChild(firstRow);
+        logoCont.addChild(secondRow);
+
+        // logoCont.anchor.set(0.5);
+
+        logoCont.position.set((window.innerWidth / 2) - logoCont.width, 25);
+
+        return logoCont;
+
     }
 
     function setup() {
@@ -303,6 +397,8 @@ module.exports = () => {
             buttons.forEach((btn, ind) => {
                 buttonCont.addChild(createBtns(btn, ind));
             })
+            buttonCont.addChild(recordBtn());
+            buttonCont.addChild(setupLogo());
             mainjs.app.stage.addChild(buttonCont);
             setupMenus();
             initMenu();
@@ -313,6 +409,8 @@ module.exports = () => {
             buttons.forEach((btn, ind) => {
                 buttonCont.addChild(createBtns(btn, ind));
             })
+            buttonCont.addChild(recordBtn());
+            buttonCont.addChild(setupLogo());
             mainjs.app.stage.addChild(buttonCont);
             setupMenus();
             initMenu();

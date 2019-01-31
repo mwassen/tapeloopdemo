@@ -12,6 +12,37 @@ let Tone = require("tone");
 
 module.exports = () => {
 
+    let actx = Tone.context;
+    let dest = actx.createMediaStreamDestination();
+    let recorder = new MediaRecorder(dest.stream);
+
+    Tone.Master.connect(dest);
+
+    let chunks = [];
+
+    recorder.ondataavailable = evt => {
+        chunks.push(evt.data);
+    }
+
+    recorder.onstop = evt => {
+        let blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+
+        // Setup and format current date + time
+        let today = new Date();
+        let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+        // create link and start download - Adapted from https://jsfiddle.net/koldev/cW7W5/
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        let url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = "tape fumes - " + date + " " + time + ".ogg";
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
 
     return {
         newPlayer: () => {
@@ -77,8 +108,14 @@ module.exports = () => {
                 }
             }
         },
-        recordAudio: () => {
-
+        startRecord: () => {
+            recorder.start();
+            console.log("start");
+        },
+        stopRecord: () => {
+            recorder.stop();
+            
+            console.log("stop");
         }
         
     }
