@@ -110,12 +110,9 @@ module.exports = () => {
         },
         startRecord: () => {
             recorder.start();
-            console.log("start");
         },
         stopRecord: () => {
             recorder.stop();
-            
-            console.log("stop");
         }
         
     }

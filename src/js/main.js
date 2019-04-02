@@ -7,7 +7,6 @@ if( navigator.userAgent.match(/Android/i)
 	|| navigator.userAgent.match(/BlackBerry/i)
 ){
 	window.location.href = "./touchsplash.html";
-	return;
 }
 
 // Modules
