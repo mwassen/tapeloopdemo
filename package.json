@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "watchify ./src/js/main.js -o bundle.js",
     "build": "browserify ./src/js/main.js"
   },
   "author": "Marcus Wassén",
@@ -18,6 +19,7 @@
     "tone": "^0.12.80"
   },
   "devDependencies": {
-    "browserify": "^16.2.3"
+    "browserify": "^16.2.3",
+    "watchify": "^3.11.1"
   }
 }
