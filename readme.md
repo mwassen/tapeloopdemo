@@ -11,7 +11,7 @@ A web-based app to do horrible things to pixelated cassette tapes, all in the na
 ## How To Run
 
 1. Run `npm install`
-2. Use [Browserify](http://browserify.org/) to bundle *./src/js/main.js* into *bundle.js*.
+2. Run `npm run dev`
 
 
 
